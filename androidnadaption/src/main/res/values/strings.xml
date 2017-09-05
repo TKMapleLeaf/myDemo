@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">AndroidNAdaptionCamera</string>
+    <string name="app_name">AndroidNAdaption</string>
+
+    <string name="rationale_camera">拍照或获取系统图片，需要拍照和读写SD卡权限</string>
+    <string name="returned_from_app_settings_to_activity">请求权限回来</string>
+
 </resources>

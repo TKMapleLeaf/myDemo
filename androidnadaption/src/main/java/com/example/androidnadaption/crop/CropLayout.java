@@ -1,12 +1,10 @@
-package com.zxhlrj.wb.licai.widget;
+package com.example.androidnadaption.crop;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
-import com.zxhlrj.wb.licai.util.Util;
 
 
 /**

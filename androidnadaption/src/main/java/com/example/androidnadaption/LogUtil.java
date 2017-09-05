@@ -1,4 +1,4 @@
-package com.zxhlrj.wb.licai.util;
+package com.example.androidnadaption;
 
 import android.util.Log;
 

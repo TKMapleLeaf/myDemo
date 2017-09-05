@@ -1,4 +1,4 @@
-package com.chaychan.androidnadaption;
+package com.example.androidnadaption;
 
 import android.app.Application;
 import android.content.Context;

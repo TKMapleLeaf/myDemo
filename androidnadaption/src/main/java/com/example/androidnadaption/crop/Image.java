@@ -1,4 +1,4 @@
-package com.zxhlrj.wb.licai.model.bean;
+package com.example.androidnadaption.crop;
 
 import java.io.Serializable;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zxhlrj.wb.licai.util;
+package com.example.androidnadaption.crop;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;

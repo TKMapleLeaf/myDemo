@@ -1,11 +1,9 @@
-package com.zxhlrj.wb.licai.util;
+package com.example.androidnadaption.crop;
 
 import android.content.Context;
 import android.os.Environment;
 import android.view.Display;
 import android.view.WindowManager;
-
-import com.zxhlrj.wb.licai.model.bean.Image;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

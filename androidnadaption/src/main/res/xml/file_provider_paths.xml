@@ -2,5 +2,6 @@
 <resources>
     <paths>
         <external-path path="" name="myFile"></external-path>
+       <!-- <external-path name="image_path" path="" />-->
     </paths>
 </resources>

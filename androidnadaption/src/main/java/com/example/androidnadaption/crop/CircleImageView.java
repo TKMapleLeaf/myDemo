@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zxhlrj.wb.licai.widget;
+package com.example.androidnadaption.crop;
 
 
 import android.content.Context;
@@ -38,7 +38,7 @@ import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.zxhlrj.wb.licai.R;
+import com.example.androidnadaption.R;
 
 
 public class CircleImageView extends ImageView {

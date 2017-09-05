@@ -1,4 +1,4 @@
-package com.zxhlrj.wb.licai.widget;
+package com.example.androidnadaption.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,7 +10,8 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.zxhlrj.wb.licai.R;
+import com.example.androidnadaption.R;
+
 
 /**
  * Created by TK on 2017/6/12.

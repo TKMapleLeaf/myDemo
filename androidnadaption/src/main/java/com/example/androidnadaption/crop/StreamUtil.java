@@ -1,4 +1,4 @@
-package com.zxhlrj.wb.licai.util;
+package com.example.androidnadaption.crop;
 
 /**
  * Created by TK on 2017/5/14.

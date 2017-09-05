@@ -42,8 +42,8 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/actionsheet_single_selector"
         android:gravity="center"
-        android:text="@string/cancel"
-        android:textColor="@color/text_gray6"
+        android:text="取消"
+        android:textColor="#666666"
         android:textSize="18sp"
         android:textStyle="bold" />
 

@@ -1,4 +1,4 @@
-package com.zxhlrj.wb.licai.ui.activity;
+package com.example.androidnadaption.crop;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,17 +8,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.zxhlrj.wb.licai.R;
-import com.zxhlrj.wb.licai.util.StatusBarUtil;
-import com.zxhlrj.wb.licai.util.StreamUtil;
-import com.zxhlrj.wb.licai.widget.CropLayout;
+import com.example.androidnadaption.R;
 
 import java.io.FileOutputStream;
 
-import butterknife.OnClick;
 
 /**
  * 图片剪切
@@ -46,7 +43,10 @@ public class CropActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void initView() {
-
+        TextView tvCrop = (TextView) findViewById(R.id.tv_crop);
+        TextView tvCancel = (TextView) findViewById(R.id.tv_cancel);
+        tvCrop.setOnClickListener(this);
+        tvCancel.setOnClickListener(this);
     }
 
     private void initWidget() {
@@ -78,7 +78,6 @@ public class CropActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @OnClick({R.id.tv_crop, R.id.tv_cancel})
     @Override
     public void onClick(View view) {
         switch (view.getId()) {

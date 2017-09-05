@@ -1,4 +1,4 @@
-package com.chaychan.androidnadaption.utils;
+package com.example.androidnadaption.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;

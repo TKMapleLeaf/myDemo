@@ -1,4 +1,4 @@
-package com.zxhlrj.wb.licai.widget;
+package com.example.androidnadaption.widget;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -15,7 +15,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.zxhlrj.wb.licai.R;
+import com.example.androidnadaption.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -212,8 +212,8 @@ public class ActionSheetDialog {
 	}
 
 	public enum SheetItemColor {
-//		Blue("#037BFF"), Red("#FD4A2E");
-		Blue("#ff8e29"), Red("#FD4A2E");
+		Blue("#037BFF"), Red("#FD4A2E");
+//		Blue("#ff8e29"), Red("#FD4A2E");
 
 		private String name;
 

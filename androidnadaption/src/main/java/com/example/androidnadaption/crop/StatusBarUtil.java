@@ -1,4 +1,4 @@
-package com.zxhlrj.wb.licai.util;
+package com.example.androidnadaption.crop;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

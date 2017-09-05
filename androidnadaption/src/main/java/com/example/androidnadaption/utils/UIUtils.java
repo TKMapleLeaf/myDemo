@@ -1,4 +1,4 @@
-package com.chaychan.androidnadaption.utils;
+package com.example.androidnadaption.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import com.chaychan.androidnadaption.MyApplication;
+import com.example.androidnadaption.MyApplication;
 
 
 /**
