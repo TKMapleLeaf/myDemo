@@ -4,13 +4,24 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_gravity="center"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:layout_height="match_parent" >
 
     <Button
         android:id="@+id/insert"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:text="insert"/>
+
+    <EditText
+        android:id="@+id/et_name"
+        android:hint="删除的姓名"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/et_age"
+        android:hint="删除的年龄"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/delete"
@@ -35,4 +46,9 @@
         android:layout_height="wrap_content"
         android:text="upgrade"/>
 
+    <TextView
+        android:id="@+id/list"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </LinearLayout>

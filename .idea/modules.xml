@@ -7,7 +7,9 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/classifydemo/classifydemo.iml" filepath="$PROJECT_DIR$/classifydemo/classifydemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/lazyfragmentdemo/lazyfragmentdemo.iml" filepath="$PROJECT_DIR$/lazyfragmentdemo/lazyfragmentdemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mvpdemo/mvpdemo.iml" filepath="$PROJECT_DIR$/mvpdemo/mvpdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/myDemo.iml" filepath="$PROJECT_DIR$/myDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sqlitedeme/sqlitedeme.iml" filepath="$PROJECT_DIR$/sqlitedeme/sqlitedeme.iml" />
       <module fileurl="file://$PROJECT_DIR$/sqlitedeme/sqlitedeme.iml" filepath="$PROJECT_DIR$/sqlitedeme/sqlitedeme.iml" />
       <module fileurl="file://$PROJECT_DIR$/topnewgrid/topnewgrid.iml" filepath="$PROJECT_DIR$/topnewgrid/topnewgrid.iml" />
       <module fileurl="file://$PROJECT_DIR$/topnewrecyclerview/topnewrecyclerview.iml" filepath="$PROJECT_DIR$/topnewrecyclerview/topnewrecyclerview.iml" />

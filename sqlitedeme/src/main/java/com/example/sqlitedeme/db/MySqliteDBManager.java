@@ -62,10 +62,12 @@ public class MySqliteDBManager {
         ArrayList<UserBean> list = new ArrayList<>();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
-        String sql = "select " + TestDao.T_NAME  + ","
+        String sql = "select "
+                + TestDao.T_NAME  + ","
                 + TestDao.T_AGE + ","
-                + TestDao.T_PHONE + " from "
-                + TestDao.TABLE_NAME + " where " + TestDao.T_AGE + "<?";
+                + TestDao.T_PHONE
+                + " from " + TestDao.TABLE_NAME
+                + " where " + TestDao.T_AGE + "<?";
 
         Cursor cursor = database.rawQuery(sql, new String[]{age});
 
