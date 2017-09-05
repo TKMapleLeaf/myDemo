@@ -1,1 +1,1 @@
-include ':app', ':classifydemo', ':topnewgrid', ':topnewrecyclerview', ':lazyfragmentdemo', ':androidnadaption'
+include ':app', ':classifydemo', ':topnewgrid', ':topnewrecyclerview'
