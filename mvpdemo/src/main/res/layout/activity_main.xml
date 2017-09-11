@@ -27,5 +27,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="example6"/>
+    <Button
+        android:id="@+id/bt_cache"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="cache"/>
+    <TextView
+        android:id="@+id/tv_cache"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""/>
 
 </LinearLayout>

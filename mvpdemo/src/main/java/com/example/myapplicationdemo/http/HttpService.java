@@ -2,6 +2,7 @@ package com.example.myapplicationdemo.http;
 
 
 import com.example.myapplicationdemo.HttpConstants;
+import com.example.myapplicationdemo.bean.HomeBean;
 import com.example.myapplicationdemo.bean.LoginBean;
 import com.example.myapplicationdemo.bean.UserBean;
 
@@ -31,6 +32,9 @@ public interface HttpService {
     //GET请求 传入全url
     @GET
     Call<String> getbankList(@Url String url);
+
+    @GET(HttpConstants.HOME)
+    Call<HomeBean> home();
 
     //GET请求
     @GET(HttpConstants.LOGIN)
