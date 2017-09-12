@@ -120,7 +120,8 @@ public class HttpRequests {
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
-                .addInterceptor(logInterceptor)
+//                .addInterceptor(logInterceptor)
+                .addNetworkInterceptor(logInterceptor)
                 .cache(cache)
                 .retryOnConnectionFailure(true)
                 .connectTimeout(5, TimeUnit.SECONDS)
@@ -163,9 +164,11 @@ public class HttpRequests {
                 Log.e("Interceptor", "response: " + response.toString());
                 //添加头信息，配置Cache-Control
                 //removeHeader("Pragma") 使缓存生效
+                String cache = request.cacheControl().toString();
                 return response.newBuilder()
                         .removeHeader("Pragma")
-                        .header("Cache-Control", "public, max-age=" + CACHE_AGE_SHORT)
+//                        .header("Cache-Control", "public, max-age=" + CACHE_AGE_SHORT)
+                        .header("Cache-Control", cache)
                         .build();
             } else {
                 Log.e("Interceptor", "net not connect");

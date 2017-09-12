@@ -5,8 +5,10 @@ import com.example.myapplicationdemo.HttpConstants;
 import com.example.myapplicationdemo.bean.HomeBean;
 import com.example.myapplicationdemo.bean.LoginBean;
 import com.example.myapplicationdemo.bean.UserBean;
+import com.example.myapplicationdemo.retrofitcachelib.anno.Cache;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -33,6 +35,8 @@ public interface HttpService {
     @GET
     Call<String> getbankList(@Url String url);
 
+//    @Headers("Cache-Control: public, max-age=60")
+    @Cache(time = 20,timeUnit = TimeUnit.MINUTES)
     @GET(HttpConstants.HOME)
     Call<HomeBean> home();
 
