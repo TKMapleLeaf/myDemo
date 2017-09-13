@@ -21,7 +21,7 @@ public class LoginModel {
         params.put("username", username);
         params.put("passwore", passwore);
 
-        Call<LoginBean> call = HttpRequests.getinstance().getHttpService().getLogin(username,passwore);
+        Call<LoginBean> call = HttpRequests.getinstance().getHttpService().login(username,passwore);
 
         call.enqueue(new Callback<LoginBean>() {
             @Override

@@ -1,4 +1,4 @@
-package com.example.myapplicationdemo;
+package com.example.retrofitcache.constants;
 
 /**
  * Created by Administrator on 2017/2/20.

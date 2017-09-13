@@ -1,8 +1,8 @@
-package com.example.myapplicationdemo.http;
+package com.example.retrofitcache.http;
 
 import android.content.Context;
 
-import com.example.myapplicationdemo.HttpConstants;
+import com.example.retrofitcache.constants.HttpConstants;
 
 import java.util.concurrent.TimeUnit;
 

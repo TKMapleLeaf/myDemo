@@ -1,4 +1,4 @@
-package com.example.myapplicationdemo.http;
+package com.example.retrofitcache.http;
 
 import android.app.IntentService;
 import android.app.NotificationManager;

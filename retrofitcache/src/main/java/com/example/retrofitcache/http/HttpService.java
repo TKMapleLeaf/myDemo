@@ -1,9 +1,10 @@
-package com.example.myapplicationdemo.http;
+package com.example.retrofitcache.http;
 
 
-import com.example.myapplicationdemo.HttpConstants;
-import com.example.myapplicationdemo.bean.HomeBean;
-import com.example.myapplicationdemo.bean.LoginBean;
+import com.example.retrofitcache.bean.HomeBean;
+import com.example.retrofitcache.bean.LoginBean;
+import com.example.retrofitcache.bean.Task;
+import com.example.retrofitcache.constants.HttpConstants;
 
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -32,6 +34,8 @@ public interface HttpService {
     @GET
     Call<String> getbankList(@Url String url);
 
+//    @Headers("Cache-Control: public, max-age=60")
+//    @Cache(time = 20,timeUnit = TimeUnit.MINUTES)
     @GET(HttpConstants.HOME)
     Call<HomeBean> home();
 
@@ -48,6 +52,9 @@ public interface HttpService {
     @FormUrlEncoded
     @POST(HttpConstants.LOGIN)
     Call<LoginBean> login(@FieldMap Map<String, String> params);
+
+    @POST("/tasks")
+    Call<Task> createTask(@Body Task task);
 
     //上传图片
     @Multipart
