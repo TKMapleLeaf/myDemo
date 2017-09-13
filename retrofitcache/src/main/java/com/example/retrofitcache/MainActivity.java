@@ -2,13 +2,13 @@ package com.example.retrofitcache;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.retrofitcache.bean.HomeBean;
 import com.example.retrofitcache.bean.LoginBean;
-import com.example.retrofitcache.http.HttpRequestsForCache;
 import com.example.retrofitcache.http.HttpService;
 import com.example.retrofitcache.http.cache.EnhancedCacheInterceptor;
 import com.example.retrofitcache.http.cache.EnhancedCall;
@@ -17,14 +17,19 @@ import com.example.retrofitcache.http.retrofitcachelib.RetrofitCache;
 import com.example.retrofitcache.http.retrofitcachelib.intercept.CacheForceInterceptorNoNet;
 import com.example.retrofitcache.http.retrofitcachelib.intercept.CacheInterceptorOnNet;
 import com.example.retrofitcache.util.LogUtil;
+import com.example.retrofitcache.util.NetWorkUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
+import okhttp3.CacheControl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -33,6 +38,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.example.retrofitcache.util.NetWorkUtil.isNetworkAvailable;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -71,6 +78,18 @@ public class MainActivity extends AppCompatActivity {
                 get3();
             }
         });
+        findViewById(R.id.get5).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                get5();
+            }
+        });
+        findViewById(R.id.get6).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                get6();
+            }
+        });
         findViewById(R.id.post).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,7 +105,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void get1() {
-        api = HttpRequestsForCache.getinstance().getHttpService();
+//        api = HttpRequestsForCache.HttpRequestsForCache();
+//        api = RetrofitNetUtil.requestData();
+        api = com.example.retrofitcache.http.get.HttpRequestsForCache.getinstance().getHttpService();
         requestAPI();
     }
 
@@ -243,5 +264,167 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         mHttpService = retrofit.create(HttpService.class);
+    }
+
+    private void get5(){
+
+        File httpCacheDirectory = new File(MyApplication.context.getCacheDir(), "HttpCache5");
+        int cacheSize = 10 * 1024 * 1024; // 10 MB
+        Cache cache = new Cache(httpCacheDirectory, cacheSize);
+
+        //开启Log
+        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
+        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //手动创建一个OkHttpClient并设置超时时间
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .readTimeout(5000, TimeUnit.MILLISECONDS)
+                .connectTimeout(5000, TimeUnit.MILLISECONDS)
+                .writeTimeout(5000, TimeUnit.MILLISECONDS)
+                .addInterceptor(logInterceptor)
+                .cache(cache)
+                .addNetworkInterceptor(new Interceptor() {
+                    @Override
+                    public okhttp3.Response intercept(Chain chain) throws IOException {
+                        Request request = chain.request();
+                        okhttp3.Response response = chain.proceed(request);
+                        Log.e("Interceptor", "request: " + NetWorkUtil.isNetworkAvailable(MyApplication.context));
+                        // DANGER! We're overwriting an existing header. Use caution.
+                        okhttp3.Response hackedResponse = response
+                                .newBuilder()
+                                .removeHeader("Pragma")
+                                .header("Cache-Control", "max-age=3600")
+                                .build();
+
+                        return hackedResponse;
+                    }
+                })
+                .build();
+
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl("http://117.48.201.110")
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create());
+
+
+        Retrofit retrofit = builder.build();
+        HttpService httpService = retrofit.create(HttpService.class);
+
+        Call<ResponseBody> call =  httpService.getHome();
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        // success, server (or cache) responded
+                        if (response.raw().cacheResponse() != null) {
+                            // true: response was served from cache
+                            LogUtil.e("Interceptor: response was served from cache");
+                        }
+
+                        if (response.raw().networkResponse() != null) {
+                            // true: response was served from network/server
+                            LogUtil.e("Interceptor: response was served from network/server");
+                        }
+                        ResponseBody body = response.body();
+                        if (body != null){
+                            try {
+                                mTvCache.setText(body.string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        // failure, no network connection or conversion threw error
+                        LogUtil.e("Interceptor" + "onFailure ->" + t.getMessage());
+                    }
+                });
+    }
+
+
+    private void get6(){
+
+        File httpCacheDirectory = new File(MyApplication.context.getCacheDir(), "HttpCache6");
+        int cacheSize = 10 * 1024 * 1024; // 10 MB
+        Cache cache = new Cache(httpCacheDirectory, cacheSize);
+
+        //开启Log
+        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
+        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //手动创建一个OkHttpClient并设置超时时间
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .readTimeout(5000, TimeUnit.MILLISECONDS)
+                .connectTimeout(5000, TimeUnit.MILLISECONDS)
+                .writeTimeout(5000, TimeUnit.MILLISECONDS)
+                .addInterceptor(logInterceptor)
+                .cache(cache)
+                .addNetworkInterceptor(new Interceptor() {
+                    @Override public okhttp3.Response intercept(Interceptor.Chain chain) throws IOException {
+                        Request request = chain.request();
+                        Log.e("Interceptor", "request: " + NetWorkUtil.isNetworkAvailable(MyApplication.context));
+                        if (NetWorkUtil.isNetworkAvailable(MyApplication.context)) {
+                            Log.e("Interceptor", "request: " + request.toString());
+                            //没网时只使用缓存
+                            //自定义请求头，可以在响应头对请求头的header进行拦截，配置不同的缓存策略
+                            request = request.newBuilder()
+                                    .header("head-request", request.toString())
+                                    .cacheControl(CacheControl.FORCE_CACHE)
+                                    .build();
+                        }
+                        if (isNetworkAvailable(getApplicationContext())) {
+                            int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale (in seconds)
+                            request = request
+                                    .newBuilder()
+                                    .removeHeader("Pragma")
+                                    .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
+                                    .build();
+                        }
+
+                        return chain.proceed(request);
+                    }
+                })
+                .build();
+
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl("http://117.48.201.110")
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create());
+
+        Retrofit retrofit = builder.build();
+        HttpService httpService = retrofit.create(HttpService.class);
+
+        Call<ResponseBody> call =  httpService.getHome();
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                // success, server (or cache) responded
+                if (response.raw().cacheResponse() != null) {
+                    // true: response was served from cache
+                    LogUtil.e("Interceptor: response was served from cache");
+                }
+
+                if (response.raw().networkResponse() != null) {
+                    // true: response was served from network/server
+                    LogUtil.e("Interceptor: response was served from network/server");
+                }
+                ResponseBody body = response.body();
+                if (body != null){
+                    try {
+                        mTvCache.setText(body.string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                // failure, no network connection or conversion threw error
+                LogUtil.e("Interceptor" + "onFailure ->" + t.getMessage());
+            }
+        });
     }
 }

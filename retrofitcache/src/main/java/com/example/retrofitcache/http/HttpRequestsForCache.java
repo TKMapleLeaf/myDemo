@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.retrofitcache.MyApplication;
 import com.example.retrofitcache.constants.HttpConstants;
+import com.example.retrofitcache.util.LogUtil;
 import com.example.retrofitcache.util.NetWorkUtil;
 
 import java.io.File;
@@ -21,6 +22,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static okhttp3.CacheControl.FORCE_CACHE;
+
 /**
  * Created by Administrator on 2017/2/20.
  */
@@ -36,13 +39,13 @@ public class HttpRequestsForCache {
     //写入时长，单位：毫秒
     public static final int WRITE_TIME_OUT = 5000;
 
-    //短缓存1分钟
-    public static final int CACHE_AGE_SHORT = 60;
-    //长缓存有效期为1天
-    public static final int CACHE_STALE_LONG = 60 * 60 * 24;
+    //短缓存0分钟
+    public static final int CACHE_AGE_SHORT = 0;
+    //长缓存有效期为180
+    public static final int CACHE_STALE_LONG = 60 * 3;
 
-    private final Retrofit mRetrofit;
-    private final HttpService mHttpService;
+    private static Retrofit mRetrofit;
+    private static HttpService mHttpService;
 
     // 是否使用缓存 默认关闭
     private static boolean mUseCache = false;
@@ -74,10 +77,14 @@ public class HttpRequestsForCache {
 
     private HttpRequestsForCache() {
 
-        File httpCacheDirectory = new File(MyApplication.context.getCacheDir(), "HttpCache");
+        LogUtil.e("haha 每次都要走这里");
+
+
+
+
+        File httpCacheDirectory = new File(MyApplication.context.getCacheDir(), "HttpCache7");
         int cacheSize = 10 * 1024 * 1024; // 10 MiB
         Cache cache = new Cache(httpCacheDirectory, cacheSize);
-
         //开启Log
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -87,10 +94,13 @@ public class HttpRequestsForCache {
                 .readTimeout(READ_TIME_OUT, TimeUnit.MILLISECONDS)
                 .connectTimeout(CONNECT_TIME_OUT, TimeUnit.MILLISECONDS)
                 .writeTimeout(WRITE_TIME_OUT, TimeUnit.MILLISECONDS)
-                .addInterceptor(logInterceptor)
                 .cache(cache)
 //                .addNetworkInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+//                .addInterceptor(interceptor)
+//                .addNetworkInterceptor(interceptor)
+                .addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR_)
                 .addNetworkInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR_)
+                .addInterceptor(logInterceptor)
                 .build();
 
         mRetrofit = new Retrofit.Builder()
@@ -101,7 +111,9 @@ public class HttpRequestsForCache {
                 //增加返回值为String的支持
 //                .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
+
         mHttpService = mRetrofit.create(HttpService.class);
+//        return mHttpService;
     }
 
     public HttpService getHttpService() {
@@ -135,7 +147,7 @@ public class HttpRequestsForCache {
 
 
     // 响应头拦截器，用来配置缓存策略
-    private Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR_ = new Interceptor() {
+    private static Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR_ = new Interceptor() {
         @Override
         public Response intercept(Chain chain) throws IOException {
 
@@ -154,6 +166,15 @@ public class HttpRequestsForCache {
                         .cacheControl(CacheControl.FORCE_CACHE)
 //                        .cacheControl(cacheControl)
                         .build();
+
+            /*    CacheControl FORCE_CACHE1 = new CacheControl.Builder()
+                        .onlyIfCached()
+                        .maxStale(180, TimeUnit.SECONDS)//CacheControl.FORCE_CACHE--是int型最大值
+                        .build();
+
+                request = request.newBuilder()
+                        .cacheControl(FORCE_CACHE1)//此处设置了t秒---修改了系统方法
+                        .build();*/
             }
             Response response = chain.proceed(request);
             if (NetWorkUtil.isNetworkAvailable(MyApplication.context)) {
@@ -164,18 +185,82 @@ public class HttpRequestsForCache {
                 String cache = request.cacheControl().toString();
                 return response.newBuilder()
                         .removeHeader("Pragma")
+                        .removeHeader("Cache-Control")
                         .header("Cache-Control", "public, max-age=" + CACHE_AGE_SHORT)
 //                        .header("Cache-Control", cache)
                         .build();
             } else {
+
+
+
                 Log.e("Interceptor", "net not connect");
                 return response.newBuilder()
                         .removeHeader("Pragma")
-                        .header("Cache-Control", "public,only-if-cached, max-stale=" + CACHE_STALE_LONG)
+                        .header("Cache-Control", "public, only-if-cached, max-stale=" + CACHE_STALE_LONG)
                         .build();
             }
         }
     };
 
+    /***
+     * 拦截器，保存缓存的方法
+     * 2016年7月29日11:22:47
+     */
+    static Interceptor interceptor = new Interceptor() {
+
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+
+            if (NetWorkUtil.isNetworkAvailable(MyApplication.context)) {//有网时
+                Response response = chain.proceed(request);
+                String cacheControl = request.cacheControl().toString();
+                Log.e("yjbo-cache", "在线缓存在1分钟内可读取" + cacheControl);
+
+                switch (0) {
+                    case 0://总获取实时信息
+                        return response.newBuilder()
+                                .removeHeader("Pragma")
+                                .removeHeader("Cache-Control")
+                                .header("Cache-Control", "public, max-age=" + 0)
+                                .build();
+                    case 1://t（s）之后获取实时信息--此处是60s
+                        return response.newBuilder()
+                                .removeHeader("Pragma")
+                                .removeHeader("Cache-Control")
+                                .header("Cache-Control", "public, max-age=" + 60)
+                                .build();
+                }
+                return null;
+            } else {//无网时
+                switch (1) {
+                    case 0://无网时一直请求有网请求好的缓存数据，不设置过期时间
+                        request = request.newBuilder()
+                                .cacheControl(FORCE_CACHE)//此处不设置过期时间
+                                .build();
+                        break;
+                    case 1://此处设置过期时间为t(s);t（s）之前获取在线时缓存的信息(此处t=60)，t（s）之后就不获取了
+                        //这是设置在多长时间范围内获取缓存里面
+                        CacheControl FORCE_CACHE1 = new CacheControl.Builder()
+                                .onlyIfCached()
+                                .maxStale(180, TimeUnit.SECONDS)//CacheControl.FORCE_CACHE--是int型最大值
+                                .build();
+
+                        request = request.newBuilder()
+                                .cacheControl(FORCE_CACHE1)//此处设置了t秒---修改了系统方法
+                                .build();
+                        break;
+                }
+
+                Response response = chain.proceed(request);
+                //下面注释的部分设置也没有效果，因为在上面已经设置了
+                return response.newBuilder()
+                        .header("Cache-Control", "public, only-if-cached")
+                        .removeHeader("Pragma")
+                        .build();
+            }
+
+        }
+    };
 
 }

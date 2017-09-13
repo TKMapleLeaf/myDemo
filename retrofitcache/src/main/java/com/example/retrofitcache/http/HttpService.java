@@ -39,6 +39,9 @@ public interface HttpService {
     @GET(HttpConstants.HOME)
     Call<HomeBean> home();
 
+    @GET(HttpConstants.HOME)
+    Call<ResponseBody> getHome();
+
     //GET请求
     @GET(HttpConstants.LOGIN)
     Call<LoginBean> login(@Query("username") String phone, @Query("password") String pwd);
