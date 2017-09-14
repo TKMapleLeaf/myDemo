@@ -4,9 +4,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.retrofitcache.MyApplication;
+import com.example.retrofitcache.util.LogUtil;
 import com.example.retrofitcache.util.NetWorkUtil;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -86,16 +88,24 @@ public class EnhancedCall<T> {
                     buffer.close();
                 }
 
-                String cache = CacheManager.getInstance().getCache(sb.toString());
-                Log.d(CacheManager.TAG, "get cache->" + cache);
 
-                if (!TextUtils.isEmpty(cache) && dataClassName != null) {
-                    Object obj = new Gson().fromJson(cache, dataClassName);
-                    if (obj != null) {
-                        enhancedCallback.onGetCache((T) obj);
-                        return;
+
+                File path = CacheManager.getInstance().getDiskCachePath(MyApplication.context,sb.toString());
+                boolean isCache = CacheManager.isCacheDataFailure(MyApplication.context, path);
+                LogUtil.e("haha " + " path == " + path + "  iscache == " + isCache);
+                if (isCache){
+                    String cache = CacheManager.getInstance().getCache(sb.toString());
+                    Log.d(CacheManager.TAG, "get cache->" + cache);
+
+                    if (!TextUtils.isEmpty(cache) && dataClassName != null) {
+                        Object obj = new Gson().fromJson(cache, dataClassName);
+                        if (obj != null) {
+                            enhancedCallback.onGetCache((T) obj);
+                            return;
+                        }
                     }
                 }
+
                 enhancedCallback.onFailure(call, t);
                 Log.d(CacheManager.TAG, "onFailure->" + t.getMessage());
             }

@@ -13,6 +13,7 @@ import com.example.retrofitcache.http.HttpService;
 import com.example.retrofitcache.http.cache.EnhancedCacheInterceptor;
 import com.example.retrofitcache.http.cache.EnhancedCall;
 import com.example.retrofitcache.http.cache.EnhancedCallback;
+import com.example.retrofitcache.http.cache.HttpRequestsForCache;
 import com.example.retrofitcache.http.retrofitcachelib.RetrofitCache;
 import com.example.retrofitcache.http.retrofitcachelib.intercept.CacheForceInterceptorNoNet;
 import com.example.retrofitcache.http.retrofitcachelib.intercept.CacheInterceptorOnNet;
@@ -147,7 +148,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void get3() {
 
-        initRetrofit();
+//        initRetrofit();
+        mHttpService = HttpRequestsForCache.getinstance().getHttpService();
         Call<HomeBean> call = mHttpService.home();
 
         //使用我们自己的EnhancedCall 替换Retrofit的Call
@@ -179,7 +181,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void post() {
-        initRetrofit();
+//        initRetrofit();
+        mHttpService = HttpRequestsForCache.getinstance().getHttpService();
         Map<String,String> params = new HashMap<>();
         params.put("username",mEt_name.getText().toString().trim());
         params.put("password",mEt_pwd.getText().toString().trim());

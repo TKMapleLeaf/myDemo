@@ -75,4 +75,13 @@ public interface HttpService {
     @Streaming
     Call<ResponseBody> downloadFileWithDynamicUrlAsync(@Url String fileUrl);
 
+//
+//    @GET("book/search")
+//    Observable getAppMsg(String version);
+//
+//    @GET("book/search")
+//    Observable<String> getSearchBook(@Query("q") String name,
+//                                   @Query("tag") String tag, @Query("start") int start,
+//                                   @Query("count") int count);
+
 }

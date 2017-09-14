@@ -17,6 +17,9 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral() // jcenter() works as well because it pulls from Maven Central // add repository
+        maven {
+            url 'https://dl.bintray.com/oschinaapp/maven/'
+        }
     }
 }
 
