@@ -2,6 +2,7 @@ package com.example.moments.http;
 
 
 import com.example.moments.bean.DynamicBean;
+import com.example.moments.bean.QiniuToken;
 import com.example.moments.constants.HttpConstants;
 
 import java.util.Map;
@@ -26,6 +27,11 @@ public interface HttpService {
     @FormUrlEncoded
     @POST(HttpConstants.DYNAMIC)
     Call<DynamicBean> getDynamic(@FieldMap Map<String, String> params);
+
+    //获取七牛token
+    @FormUrlEncoded
+    @POST(HttpConstants.TOKEN)
+    Call<QiniuToken> getToken(@FieldMap Map<String, String> params);
 
 
 }

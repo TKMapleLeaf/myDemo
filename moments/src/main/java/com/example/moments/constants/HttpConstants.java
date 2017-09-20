@@ -23,6 +23,9 @@ public class HttpConstants {
     //个人中心
     public static final String USERINFO = "/first/user/UserInfo";
 
+    //获取七牛token
+    public static final String TOKEN = "/first/qiniuToken";
+
     //更换头像
     public static final String SAVE_AVATAR = "/&i_type=1&r_type=1&act=save_avatar";
 

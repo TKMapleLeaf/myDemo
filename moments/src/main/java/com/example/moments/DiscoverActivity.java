@@ -18,5 +18,11 @@ public class DiscoverActivity extends AppCompatActivity {
                 startActivity(new Intent(DiscoverActivity.this,MomentsActivity.class));
             }
         });
+        findViewById(R.id.qrcode).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(DiscoverActivity.this,QiniuActivity.class));
+            }
+        });
     }
 }
