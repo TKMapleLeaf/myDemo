@@ -1,1 +1,1 @@
-include ':app', ':classifydemo', ':topnewgrid', ':topnewrecyclerview', ':lazyfragmentdemo', ':androidnadaption', ':sqlitedeme', ':mvpdemo', ':retrofitcache', ':retrofitrxcaceh'
+include ':app', ':classifydemo', ':topnewgrid', ':topnewrecyclerview', ':lazyfragmentdemo', ':androidnadaption', ':sqlitedeme', ':mvpdemo', ':retrofitcache', ':retrofitrxcaceh', ':moments'
