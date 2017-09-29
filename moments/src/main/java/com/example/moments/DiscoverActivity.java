@@ -15,7 +15,8 @@ public class DiscoverActivity extends AppCompatActivity {
         findViewById(R.id.moments).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(DiscoverActivity.this,MomentsActivity.class));
+//                startActivity(new Intent(DiscoverActivity.this,MomentsActivity.class));
+                startActivity(new Intent(DiscoverActivity.this,Main2Activity.class));
             }
         });
         findViewById(R.id.qrcode).setOnClickListener(new View.OnClickListener() {

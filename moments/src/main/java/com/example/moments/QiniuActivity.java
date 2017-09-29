@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.example.moments.bean.QiniuToken;
 import com.example.moments.http.HttpRequests;
-import com.example.moments.qiniu.util.Auth;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
@@ -246,7 +245,6 @@ public class QiniuActivity extends AppCompatActivity implements View.OnClickList
                 // info.error中包含了错误信息，可打印调试
                 // 上传成功后将key值上传到自己的服务器
                 if (info.isOK()) {
-                    Log.i(TAG, "token===" + Auth.create(AccessKey, SecretKey).uploadToken("images"));
                     String headpicPath = "http://owkdpxi2i.bkt.clouddn.com/" + key;
                     Log.i(TAG, "complete: " + headpicPath);
                 }
