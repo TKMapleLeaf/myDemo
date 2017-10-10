@@ -6,13 +6,16 @@
       <module fileurl="file://$PROJECT_DIR$/androidnadaption/androidnadaption.iml" filepath="$PROJECT_DIR$/androidnadaption/androidnadaption.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/classifydemo/classifydemo.iml" filepath="$PROJECT_DIR$/classifydemo/classifydemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dialogdemo/dialogdemo.iml" filepath="$PROJECT_DIR$/dialogdemo/dialogdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/lazyfragmentdemo/lazyfragmentdemo.iml" filepath="$PROJECT_DIR$/lazyfragmentdemo/lazyfragmentdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/moments/moments.iml" filepath="$PROJECT_DIR$/moments/moments.iml" />
       <module fileurl="file://$PROJECT_DIR$/mvpdemo/mvpdemo.iml" filepath="$PROJECT_DIR$/mvpdemo/mvpdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/myDemo.iml" filepath="$PROJECT_DIR$/myDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/paydemo/paydemo.iml" filepath="$PROJECT_DIR$/paydemo/paydemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/retrofitcache/retrofitcache.iml" filepath="$PROJECT_DIR$/retrofitcache/retrofitcache.iml" />
       <module fileurl="file://$PROJECT_DIR$/retrofitrxcaceh/retrofitrxcaceh.iml" filepath="$PROJECT_DIR$/retrofitrxcaceh/retrofitrxcaceh.iml" />
       <module fileurl="file://$PROJECT_DIR$/sqlitedeme/sqlitedeme.iml" filepath="$PROJECT_DIR$/sqlitedeme/sqlitedeme.iml" />
+      <module fileurl="file://$PROJECT_DIR$/timertask/timertask.iml" filepath="$PROJECT_DIR$/timertask/timertask.iml" />
       <module fileurl="file://$PROJECT_DIR$/topnewgrid/topnewgrid.iml" filepath="$PROJECT_DIR$/topnewgrid/topnewgrid.iml" />
       <module fileurl="file://$PROJECT_DIR$/topnewrecyclerview/topnewrecyclerview.iml" filepath="$PROJECT_DIR$/topnewrecyclerview/topnewrecyclerview.iml" />
     </modules>
