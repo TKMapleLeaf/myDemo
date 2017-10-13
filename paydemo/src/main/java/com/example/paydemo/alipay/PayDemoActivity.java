@@ -45,7 +45,7 @@ public class PayDemoActivity extends FragmentActivity {
 	/** 工具地址：https://doc.open.alipay.com/docs/doc.htm?treeId=291&articleId=106097&docType=1 */
 	public static final String RSA2_PRIVATE = "";
 	public static final String RSA_PRIVATE = "";
-	
+
 	private static final int SDK_PAY_FLAG = 1;
 	private static final int SDK_AUTH_FLAG = 2;
 
@@ -136,7 +136,7 @@ public class PayDemoActivity extends FragmentActivity {
 		String privateKey = rsa2 ? RSA2_PRIVATE : RSA_PRIVATE;
 		String sign = OrderInfoUtil2_0.getSign(params, privateKey, rsa2);
 		final String orderInfo = orderParam + "&" + sign;
-		
+		Log.e("orderInfo", orderInfo);
 		Runnable payRunnable = new Runnable() {
 
 			@Override
