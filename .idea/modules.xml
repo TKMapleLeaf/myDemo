@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/classifydemo/classifydemo.iml" filepath="$PROJECT_DIR$/classifydemo/classifydemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/dialogdemo/dialogdemo.iml" filepath="$PROJECT_DIR$/dialogdemo/dialogdemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/encryptanddecrypt/encryptanddecrypt.iml" filepath="$PROJECT_DIR$/encryptanddecrypt/encryptanddecrypt.iml" />
       <module fileurl="file://$PROJECT_DIR$/lazyfragmentdemo/lazyfragmentdemo.iml" filepath="$PROJECT_DIR$/lazyfragmentdemo/lazyfragmentdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/moments/moments.iml" filepath="$PROJECT_DIR$/moments/moments.iml" />
       <module fileurl="file://$PROJECT_DIR$/mvpdemo/mvpdemo.iml" filepath="$PROJECT_DIR$/mvpdemo/mvpdemo.iml" />
