@@ -139,6 +139,21 @@ public class ProgressWebView extends WebView {
 
     }
 
+    /**
+     * 防止点击dialog的取消按钮之后，就不再次响应点击事件了
+     */
+    public void cancelCallback() {
+        if (mUploadCallbackAboveL != null) {
+            mUploadCallbackAboveL.onReceiveValue(null);
+            mUploadCallbackAboveL = null;
+        }
+
+        if (mUploadMessage != null) {
+            mUploadMessage.onReceiveValue(null);
+            mUploadMessage = null;
+        }
+    }
+
     private Uri fileUri;
     public static final int TYPE_REQUEST_PERMISSION = 3;
     public static final int TYPE_CAMERA = 1;
@@ -177,6 +192,12 @@ public class ProgressWebView extends WebView {
                         }
                     }
                 });
+        alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                cancelCallback();
+            }
+        });
         alertDialog.show();
     }
 
