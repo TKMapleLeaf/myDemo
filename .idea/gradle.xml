@@ -8,17 +8,23 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/X5Wwb" />
             <option value="$PROJECT_DIR$/androidnadaption" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/classifydemo" />
+            <option value="$PROJECT_DIR$/dialogdemo" />
+            <option value="$PROJECT_DIR$/encryptanddecrypt" />
             <option value="$PROJECT_DIR$/lazyfragmentdemo" />
             <option value="$PROJECT_DIR$/moments" />
             <option value="$PROJECT_DIR$/mvpdemo" />
+            <option value="$PROJECT_DIR$/paydemo" />
             <option value="$PROJECT_DIR$/retrofitcache" />
             <option value="$PROJECT_DIR$/retrofitrxcaceh" />
             <option value="$PROJECT_DIR$/sqlitedeme" />
+            <option value="$PROJECT_DIR$/timertask" />
             <option value="$PROJECT_DIR$/topnewgrid" />
             <option value="$PROJECT_DIR$/topnewrecyclerview" />
+            <option value="$PROJECT_DIR$/webUploadImg" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

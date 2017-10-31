@@ -7,11 +7,14 @@ import com.example.moments.constants.HttpConstants;
 
 import java.util.Map;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Streaming;
+import retrofit2.http.Url;
 
 /**
  * Created by Administrator on 2017/2/20.
@@ -32,6 +35,12 @@ public interface HttpService {
     @FormUrlEncoded
     @POST(HttpConstants.TOKEN)
     Call<QiniuToken> getToken(@FieldMap Map<String, String> params);
+
+
+    //下载
+    @GET
+    @Streaming
+    Call<ResponseBody> downloadFileWithDynamicUrlAsync(@Url String fileUrl);
 
 
 }
