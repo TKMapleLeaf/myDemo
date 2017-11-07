@@ -15,10 +15,8 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.retrofitcache.MyApplication;
 import com.example.retrofitcache.R;
 import com.example.retrofitcache.constants.HttpConstants;
-import com.example.retrofitcache.util.ApkUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -62,7 +60,9 @@ public class FileDownloadIntentService extends IntentService {
      */
     private String destFileName = System.currentTimeMillis() + "yzzc.apk";
 
-    //storage/emulated/0/Download/
+    /**
+     * /storage/emulated/0/Download/
+     */
     private static final String DOWNLOAD_SAVE_PATH =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator;
 
@@ -74,7 +74,9 @@ public class FileDownloadIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         mContext = this;
-        if (intent == null) return;
+        if (intent == null) {
+            return;
+        }
         String fileUri = intent.getStringExtra(DOWNLOAD_FILE_URI);
 
         //开启Log
@@ -84,7 +86,7 @@ public class FileDownloadIntentService extends IntentService {
         //手动创建一个OkHttpClient并设置超时时间
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .readTimeout(READ_TIME_OUT, TimeUnit.MILLISECONDS)
-                .connectTimeout(CONNECT_TIME_OUT,TimeUnit.MILLISECONDS)
+                .connectTimeout(CONNECT_TIME_OUT, TimeUnit.MILLISECONDS)
                 .addInterceptor(logInterceptor)
                 .build();
 
@@ -111,12 +113,14 @@ public class FileDownloadIntentService extends IntentService {
             Toast.makeText(mContext, "正在后台下载中,点击通知栏查看安装。", Toast.LENGTH_LONG).show();
             return;
         }
-        isLoading = true;//下载中
+        //下载中
+        isLoading = true;
         initNotification();
         try {
             writeResponseBodyToDisk(request.execute().body());
         } catch (IOException e) {
-            isLoading = false;//下载失败，可重复下载
+            //下载失败，可重复下载
+            isLoading = false;
             cancelNotification();
             Log.e(
                     "FileDownloadIntentSvc",
@@ -128,6 +132,7 @@ public class FileDownloadIntentService extends IntentService {
 
     /**
      * 写入文件
+     *
      * @param body
      * @throws IOException
      */
@@ -193,6 +198,7 @@ public class FileDownloadIntentService extends IntentService {
 
     /**
      * 发送进度
+     *
      * @param fileDownloadedInPercent
      * @param fileSize
      */
@@ -210,8 +216,12 @@ public class FileDownloadIntentService extends IntentService {
             super.handleMessage(msg);
             int arg1 = msg.arg1;
             if (arg1 == 100) {
-                isLoading = false;//下载完成，可重复下载
+                //下载完成，可重复下载
+                isLoading = false;
+                //点击通知栏安装
                 onDownloadComplete(mDownloadedFile);
+                //弹出安装页面
+                installApp(mContext, mDownloadedFile);
             } else {
                 updateNotification(arg1);
 
@@ -253,7 +263,6 @@ public class FileDownloadIntentService extends IntentService {
         notificationManager.cancel(NOTIFY_ID);
     }
 
-
     private void onDownloadComplete(File file) {
         stopForeground(true);
         builder.mActions.clear();
@@ -266,29 +275,14 @@ public class FileDownloadIntentService extends IntentService {
     }
 
     /**
-     * 安装apk
+     * 通知栏点击安装apk
      *
      * @param file
      * @return
      */
     private PendingIntent getDefaultIntent(File file) {
-        Uri uri;
-        //new File(DOWNLOAD_SAVE_PATH + File.separator + destFileName)
-        if (Build.VERSION.SDK_INT >= 24) {
-            uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileprovider", file);
-        } else {
-            uri = Uri.fromFile(file);
-        }
 
-
-        //弹出安装页面
-        if (uri !=null){
-            ApkUtils.install(MyApplication.context,uri);
-        }else{
-            if (file!=null){
-                ApkUtils.install(MyApplication.context,file);
-            }
-        }
+        Uri uri = getUriForFile(mContext, file);
 
         //通知栏点击安装
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -296,4 +290,53 @@ public class FileDownloadIntentService extends IntentService {
         intent.setDataAndType(uri, "application/vnd.android.package-archive");
         return PendingIntent.getActivity(this, 1, intent, FLAG_UPDATE_CURRENT);
     }
+
+    /**
+     * 安装App（支持7.0）
+     *
+     * @param context 上下文
+     * @param file    文件
+     */
+    public static void installApp(Context context, File file) {
+        if (!(file != null && file.exists())) {
+            return;
+        }
+        context.startActivity(getInstallAppIntent(context, file));
+    }
+
+    /**
+     * 获取安装App(支持7.0)的意图
+     *
+     * @param context
+     * @return
+     */
+    public static Intent getInstallAppIntent(Context context, File apkfile) {
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri contentUri = getUriForFile(context, apkfile);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        }
+        intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+        return intent;
+    }
+
+    /**
+     * 将文件转换成uri(支持7.0)
+     *
+     * @param mContext
+     * @param file
+     * @return
+     */
+    public static Uri getUriForFile(Context mContext, File file) {
+        Uri fileUri = null;
+        if (Build.VERSION.SDK_INT >= 24) {
+            fileUri = FileProvider.getUriForFile(mContext, mContext.getPackageName() + ".fileprovider", file);
+        } else {
+            fileUri = Uri.fromFile(file);
+        }
+        return fileUri;
+    }
+
 }
