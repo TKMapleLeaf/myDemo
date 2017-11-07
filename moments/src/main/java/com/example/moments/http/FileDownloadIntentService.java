@@ -60,7 +60,7 @@ public class FileDownloadIntentService extends IntentService {
     /**
      * 目标文件存储的文件名
      */
-    private String destFileName = System.currentTimeMillis() + "yzzc.apk";
+    private String destFileName = System.currentTimeMillis() + "mydemo.apk";
 
     //storage/emulated/0/Download/
     private static final String DOWNLOAD_SAVE_PATH =
