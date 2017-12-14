@@ -1,10 +1,5 @@
 package com.example.notify;
 
-/**
- * @author luhh on 2017/12/14.
- *         desc
- */
-
 public class DemoBean {
 
 

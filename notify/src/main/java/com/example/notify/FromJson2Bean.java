@@ -8,10 +8,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
-/**
- * @author luhh on 2017/12/14.
- *         desc
- */
 
 public class FromJson2Bean<T> {
 
