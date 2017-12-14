@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/webViewParent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+            </FrameLayout>
+
+            <WebView
+                android:id="@+id/webView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ECF0F2"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:id="@+id/btnBack"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:layout_weight="1"
+                    android:background="#ECF0F2"
+                    android:padding="10dp"
+                    android:src="@drawable/theme_toolbar_btn_back_fg_normal0"/>
+
+                <ImageButton
+                    android:id="@+id/btnForward"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:layout_weight="1"
+                    android:background="#ECF0F2"
+                    android:padding="10dp"
+                    android:src="@drawable/theme_toolbar_btn_forward_fg_normal0"/>
+
+                <ImageButton
+                    android:id="@+id/btnMore"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.0dp"
+                    android:layout_weight="1"
+                    android:background="#ECF0F2"
+                    android:padding="10dp"
+                    android:src="@drawable/theme_toolbar_btn_menu_fg_normal"/>
+
+                <ImageButton
+                    android:id="@+id/btnHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:layout_weight="1"
+                    android:background="#ECF0F2"
+                    android:padding="10dp"
+                    android:src="@drawable/theme_toolbar_btn_home_fg_normal2"/>
+
+                <ImageButton
+                    android:id="@+id/btnExit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:layout_weight="1"
+                    android:background="#ECF0F2"
+                    android:padding="10dp"
+                    android:src="@drawable/theme_menu_btn_quit_fg_normal0"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvback"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="60dp"
+            android:layout_marginLeft="30dp"
+            android:textSize="13sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/shape_round_textview"
+            android:gravity="center"
+            android:text="返回"/>
+
+    </FrameLayout>
+</LinearLayout>
