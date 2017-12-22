@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         setContentView(R.layout.activity_main);
-
 //        mWebView = (com.tencent.smtt.sdk.WebView) findViewById(R.id.webView);
         mViewParent = (ViewGroup) findViewById(R.id.webViewParent);
 

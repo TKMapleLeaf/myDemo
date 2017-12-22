@@ -3,7 +3,6 @@ package com.example.myapplicationdemo;
 import android.app.Application;
 import android.content.Context;
 
-import com.example.myapplicationdemo.retrofitcachelib.RetrofitCache;
 
 /**
  * Created by tk on 17-9-3.
@@ -18,6 +17,5 @@ public class MyApplication extends Application {
         super.onCreate();
         context = this;
         applictionCOntext = getApplicationContext();
-        RetrofitCache.getInatance().init(this);
     }
 }
