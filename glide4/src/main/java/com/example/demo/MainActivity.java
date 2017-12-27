@@ -60,9 +60,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .into(iv);
                 break;
             case R.id.button2:
-                GlideApp.with(this)
+               /* GlideApp.with(this)
                         .load(url)
-                        .into(iv);
+                        .into(iv);*/
                 break;
             case R.id.button3:
                 Glide.with(this)
