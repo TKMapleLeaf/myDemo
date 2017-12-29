@@ -14,6 +14,8 @@
       <module fileurl="file://$PROJECT_DIR$/encryptanddecrypt/encryptanddecrypt.iml" filepath="$PROJECT_DIR$/encryptanddecrypt/encryptanddecrypt.iml" />
       <module fileurl="file://$PROJECT_DIR$/glide4/glide4.iml" filepath="$PROJECT_DIR$/glide4/glide4.iml" />
       <module fileurl="file://$PROJECT_DIR$/lazyfragmentdemo/lazyfragmentdemo.iml" filepath="$PROJECT_DIR$/lazyfragmentdemo/lazyfragmentdemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/materialdesign/materialdesign.iml" filepath="$PROJECT_DIR$/materialdesign/materialdesign.iml" />
+      <module fileurl="file://$PROJECT_DIR$/materialdialog/materialdialog.iml" filepath="$PROJECT_DIR$/materialdialog/materialdialog.iml" />
       <module fileurl="file://$PROJECT_DIR$/moments/moments.iml" filepath="$PROJECT_DIR$/moments/moments.iml" />
       <module fileurl="file://$PROJECT_DIR$/mvpdemo/mvpdemo.iml" filepath="$PROJECT_DIR$/mvpdemo/mvpdemo.iml" />
       <module fileurl="file://E:\AndroidStudioProject\demo\MyApplicationDemo\myDemo.iml" filepath="E:\AndroidStudioProject\demo\MyApplicationDemo\myDemo.iml" />
@@ -26,7 +28,7 @@
       <module fileurl="file://$PROJECT_DIR$/timertask/timertask.iml" filepath="$PROJECT_DIR$/timertask/timertask.iml" />
       <module fileurl="file://$PROJECT_DIR$/topnewgrid/topnewgrid.iml" filepath="$PROJECT_DIR$/topnewgrid/topnewgrid.iml" />
       <module fileurl="file://$PROJECT_DIR$/topnewrecyclerview/topnewrecyclerview.iml" filepath="$PROJECT_DIR$/topnewrecyclerview/topnewrecyclerview.iml" />
-      <module fileurl="file://$PROJECT_DIR$/utils/utils.iml" filepath="$PROJECT_DIR$/utils/utils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BottomNavigationView/utils.iml" filepath="$PROJECT_DIR$/BottomNavigationView/utils.iml" />
       <module fileurl="file://$PROJECT_DIR$/webUploadImg/webUploadImg.iml" filepath="$PROJECT_DIR$/webUploadImg/webUploadImg.iml" />
     </modules>
   </component>
