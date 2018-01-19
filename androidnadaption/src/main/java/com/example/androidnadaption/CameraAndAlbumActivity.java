@@ -162,7 +162,13 @@ public class CameraAndAlbumActivity extends AppCompatActivity implements EasyPer
         //这将显示一个对话框,指导他们在应用程序启用权限设置。
         //用户勾选了不在询问权限后，弹出自己的对话框告诉用户，可以在应用程序中对权限进行设置，点“确定”后，跳转到应用程序的设置页面
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            new AppSettingsDialog.Builder(this).build().show();
+            new AppSettingsDialog.Builder(this)
+                    .setTitle("提示")
+                    .setRationale("请手动打开 设置-更多应用-demo-权限管理 打开相关权限，否则可能影响app的正常使用")
+                    .setPositiveButton("确定")
+                    .setNegativeButton("取消")
+                    .build().show();
+//            new AppSettingsDialog.Builder(this).build().show();
         }
     }
 

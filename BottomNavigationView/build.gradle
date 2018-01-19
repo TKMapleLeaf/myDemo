@@ -3,10 +3,8 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
 
-
-
     defaultConfig {
-        applicationId "com.example.demo.utils"
+        applicationId "com.example.demo"
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1

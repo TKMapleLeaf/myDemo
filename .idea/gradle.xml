@@ -8,6 +8,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/BottomNavigationView" />
             <option value="$PROJECT_DIR$/X5Wwb" />
             <option value="$PROJECT_DIR$/addwatermark" />
             <option value="$PROJECT_DIR$/androidnadaption" />
@@ -31,7 +32,6 @@
             <option value="$PROJECT_DIR$/timertask" />
             <option value="$PROJECT_DIR$/topnewgrid" />
             <option value="$PROJECT_DIR$/topnewrecyclerview" />
-            <option value="$PROJECT_DIR$/utils" />
             <option value="$PROJECT_DIR$/webUploadImg" />
           </set>
         </option>

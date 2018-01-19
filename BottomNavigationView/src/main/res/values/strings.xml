@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Utils</string>
+    <string name="app_name">BottomNavigation</string>
     <string name="title_home">音乐</string>
     <string name="title_dashboard">云端</string>
     <string name="title_notifications">音乐</string>

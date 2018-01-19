@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/BottomNavigationView/BottomNavigationView.iml" filepath="$PROJECT_DIR$/BottomNavigationView/BottomNavigationView.iml" />
       <module fileurl="file://$PROJECT_DIR$/MyApplicationDemo.iml" filepath="$PROJECT_DIR$/MyApplicationDemo.iml" />
-      <module fileurl="file://E:\AndroidStudioProjects\project3\myDemo\MyApplicationDemo.iml" filepath="E:\AndroidStudioProjects\project3\myDemo\MyApplicationDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/X5Wwb/X5Wwb.iml" filepath="$PROJECT_DIR$/X5Wwb/X5Wwb.iml" />
       <module fileurl="file://$PROJECT_DIR$/addwatermark/addwatermark.iml" filepath="$PROJECT_DIR$/addwatermark/addwatermark.iml" />
       <module fileurl="file://$PROJECT_DIR$/androidnadaption/androidnadaption.iml" filepath="$PROJECT_DIR$/androidnadaption/androidnadaption.iml" />
@@ -18,7 +18,6 @@
       <module fileurl="file://$PROJECT_DIR$/materialdialog/materialdialog.iml" filepath="$PROJECT_DIR$/materialdialog/materialdialog.iml" />
       <module fileurl="file://$PROJECT_DIR$/moments/moments.iml" filepath="$PROJECT_DIR$/moments/moments.iml" />
       <module fileurl="file://$PROJECT_DIR$/mvpdemo/mvpdemo.iml" filepath="$PROJECT_DIR$/mvpdemo/mvpdemo.iml" />
-      <module fileurl="file://E:\AndroidStudioProject\demo\MyApplicationDemo\myDemo.iml" filepath="E:\AndroidStudioProject\demo\MyApplicationDemo\myDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/notify/notify.iml" filepath="$PROJECT_DIR$/notify/notify.iml" />
       <module fileurl="file://$PROJECT_DIR$/paydemo/paydemo.iml" filepath="$PROJECT_DIR$/paydemo/paydemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/retrofitcache/retrofitcache.iml" filepath="$PROJECT_DIR$/retrofitcache/retrofitcache.iml" />
@@ -28,7 +27,6 @@
       <module fileurl="file://$PROJECT_DIR$/timertask/timertask.iml" filepath="$PROJECT_DIR$/timertask/timertask.iml" />
       <module fileurl="file://$PROJECT_DIR$/topnewgrid/topnewgrid.iml" filepath="$PROJECT_DIR$/topnewgrid/topnewgrid.iml" />
       <module fileurl="file://$PROJECT_DIR$/topnewrecyclerview/topnewrecyclerview.iml" filepath="$PROJECT_DIR$/topnewrecyclerview/topnewrecyclerview.iml" />
-      <module fileurl="file://$PROJECT_DIR$/BottomNavigationView/utils.iml" filepath="$PROJECT_DIR$/BottomNavigationView/utils.iml" />
       <module fileurl="file://$PROJECT_DIR$/webUploadImg/webUploadImg.iml" filepath="$PROJECT_DIR$/webUploadImg/webUploadImg.iml" />
     </modules>
   </component>
