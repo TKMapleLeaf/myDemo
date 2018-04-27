@@ -36,10 +36,6 @@ import retrofit2.Retrofit;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
-/**
- * Created by Administrator on 2017/4/26.
- */
-
 public class FileDownloadIntentService extends IntentService {
 
     public static final String DOWNLOAD_FILE_URI = "DOWNLOAD_FILE_URI";
@@ -69,7 +65,7 @@ public class FileDownloadIntentService extends IntentService {
     /**
      * 目标文件存储的文件名
      */
-    private String destFileName = System.currentTimeMillis() + "imchat.apk";
+    private String destFileName = System.currentTimeMillis() + "abc.apk";
 
     /**
      * /storage/emulated/0/Download/
