@@ -280,6 +280,9 @@ public class FileDownloadIntentService extends IntentService {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("新版本更新")
                 .setContentText("正在下载")
+                 //铃声和震动均只执行一次 setOnlyAlertOnce(true) 一起使用
+                .setDefaults(NotificationCompat.FLAG_ONLY_ALERT_ONCE)
+                .setOnlyAlertOnce(true)
                 .setProgress(100, 0, false);
         getManager().notify(NOTIFY_ID, builder.build());
     }
