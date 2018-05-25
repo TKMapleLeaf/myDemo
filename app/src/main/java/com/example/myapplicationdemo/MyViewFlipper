@@ -1,0 +1,143 @@
+import android.content.Context;
+import android.support.annotation.AnimRes;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.ViewFlipper;
+
+
+import com.zxhlrj.demo.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 上下滚动跑马灯
+ */
+
+public class MyViewFlipper extends ViewFlipper {
+
+    private Context mContext;
+    private int interval = 2000;
+    private List<View> views = new ArrayList<>();
+
+    /**
+     * 设置动画时间
+     */
+    private boolean isSetAnimDuration = false;
+
+    /**
+     * 动画时间
+     */
+    private int animDuration = 500;
+
+    @AnimRes
+    private int inAnimResId = R.anim.anim_in;
+
+    @AnimRes
+    private int outAnimResId = R.anim.anim_out;
+
+
+    public MyViewFlipper(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context, attrs, 0);
+    }
+
+    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
+
+        mContext = context;
+
+        //设置时间间隔2000毫秒
+        setFlipInterval(interval);
+
+        //进来的动画
+        Animation animIn = AnimationUtils.loadAnimation(mContext, inAnimResId);
+        if (isSetAnimDuration) {
+            animIn.setDuration(animDuration);
+        }
+        setInAnimation(animIn);
+        //退出的动画
+        Animation animaOut = AnimationUtils.loadAnimation(mContext, outAnimResId);
+        if (isSetAnimDuration) {
+            animIn.setDuration(animDuration);
+        }
+        setOutAnimation(animaOut);
+    }
+
+    /**
+     * 设置数据
+     *
+     * @param datas
+     */
+    public void startWithList(List<String> datas) {
+        createViews(datas);
+        start(views);
+    }
+
+    /**
+     * 创建子item view
+     * @param datas
+     */
+    private void createViews(final List<String> datas) {
+
+        if (datas == null || datas.size() == 0) {
+            return;
+        }
+        views.clear();
+        for (int i = 0; i < datas.size(); i++) {
+
+            LinearLayout moreView = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.layout_view_flipper, null);
+            TextView tv1 = (TextView) moreView.findViewById(R.id.tv_content1);
+
+            tv1.setText(datas.get(i));
+
+            views.add(moreView);
+        }
+    }
+
+    /**
+     * 设置循环滚动的View
+     *
+     * @param views
+     */
+    public void start(final List<View> views) {
+
+        if (views == null || views.size() == 0) {
+            return;
+        }
+        removeAllViews();
+        clearAnimation();
+        for (int i = 0; i < views.size(); i++) {
+            addView(views.get(i));
+        }
+        //开启翻滚
+        startFlipping();
+    }
+}
+
+//    private List<String> info = new ArrayList<>();
+// if (mMyViewFlipper != null) {
+//         mMyViewFlipper.startWithList(info);
+//         }
+
+//    /**
+//     * 开始文字轮播
+//     */
+//    public void startFlipping() {
+//        if (mMyViewFlipper != null) {
+//            mMyViewFlipper.startFlipping();
+//        }
+//    }
+//
+//    /**
+//     * 停止文字轮播
+//     */
+//    public void stopFlipping() {
+//        if (mMyViewFlipper != null) {
+//            mMyViewFlipper.stopFlipping();
+//        }
+//    }
