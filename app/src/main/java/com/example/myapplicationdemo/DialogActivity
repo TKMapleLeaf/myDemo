@@ -1,0 +1,145 @@
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+
+
+
+public class DialogActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_dialog);
+    }
+
+    public void showDialog(View view) {
+        // V7 包中的 AlertDialog 在 Android 2.1 以上可以提供兼容性的 Material 风格 Dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("标题");
+        builder.setMessage("内容");
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setNeutralButton("左角", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ToastUtils.showShort("点击了左角");
+            }
+        });
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ToastUtils.showShort("点击了确定");
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ToastUtils.showShort("点击了取消");
+            }
+        });
+        builder.show();
+    }
+
+
+    public void showEditDialog(View view) {
+        // V7 包中的 AlertDialog 在 Android 2.1 以上可以提供兼容性的 Material 风格 Dialog
+        EditText editText = new EditText(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("标题");
+        builder.setMessage("内容");
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setView(editText);
+        //builder.setView(new EditText(this),20,20,20,20);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ToastUtils.showShort("点击了确定"+editText.getText().toString().trim());
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ToastUtils.showShort("点击了取消");
+            }
+        });
+        builder.show();
+    }
+
+
+    public void showItemsDialog(View view) {
+        // V7 包中的 AlertDialog 在 Android 2.1 以上可以提供兼容性的 Material 风格 Dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("标题");
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setItems(new String[]{"Item1", "Item2"}, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ToastUtils.showShort("点击了" + i);
+            }
+        });
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ToastUtils.showShort("点击了确定");
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ToastUtils.showShort("点击了取消");
+            }
+        });
+        builder.show();
+    }
+
+    public void showMultiChoiceItemsDialog(View view) {
+        // V7 包中的 AlertDialog 在 Android 2.1 以上可以提供兼容性的 Material 风格 Dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("标题");
+        builder.setIcon(R.mipmap.ic_launcher);
+
+        builder.setMultiChoiceItems(new String[]{"233333", "hahahaha"}, new boolean[]{true,false}, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                ToastUtils.showShort("点击了" + i + "  " + b);
+            }
+        });
+
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ToastUtils.showShort("点击了确定");
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ToastUtils.showShort("点击了取消");
+            }
+        });
+        builder.show();
+    }
+
+    public void showViewDialog(View view) {
+        LayoutInflater inflater = getLayoutInflater();
+        View dialog = inflater.inflate(R.layout.dialog, (ViewGroup) findViewById(R.id.dialog));
+        EditText editText = (EditText) dialog.findViewById(R.id.et);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("这里是Title");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ToastUtils.showShort("点击了" + editText.getText().toString());
+            }
+        });
+        builder.setView(dialog);
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.show();
+
+    }
+}
