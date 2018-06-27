@@ -139,7 +139,14 @@ public class DialogActivity extends AppCompatActivity {
         });
         builder.setView(dialog);
         builder.setIcon(R.mipmap.ic_launcher);
-        builder.show();
+       AlertDialog tempDialog = builder.create();
+        tempDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            public void onShow(DialogInterface dialog) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+        tempDialog.show();
 
     }
 }
