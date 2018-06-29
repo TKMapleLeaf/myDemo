@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:clipToPadding="false"
+    android:orientation="vertical">
+
+    <RadioGroup
+        android:id="@+id/rg_menu"
+        android:layout_width="fill_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/white"
+        android:clipChildren="false"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/x40"
+        android:paddingRight="@dimen/x40">
+
+        <RadioButton
+            android:id="@+id/rb_shppingmall"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:button="@null"
+            android:checked="true"
+            android:drawableTop="@drawable/selector_shoppingmail"
+            android:paddingTop="@dimen/x40" />
+
+        <RadioButton
+            android:id="@+id/rb_shop"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:button="@null"
+            android:drawableTop="@drawable/selector_shop"
+            android:paddingTop="@dimen/x40" />
+
+        <Space
+            android:layout_width="@dimen/x160"
+            android:layout_height="fill_parent" />
+
+        <RadioButton
+            android:id="@+id/rb_shoppingcart"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:button="@null"
+            android:drawableTop="@drawable/selector_shoppingcart"
+            android:paddingTop="@dimen/x40" />
+
+        <RadioButton
+            android:id="@+id/rb_mine"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:button="@null"
+            android:drawableTop="@drawable/selector_mine"
+            android:paddingTop="@dimen/x40" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/ll_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/rg_menu"
+        android:layout_weight="1.0"
+        android:orientation="vertical" />
+
+    <View
+        style="@style/divider_line"
+        android:layout_above="@+id/rg_menu" />
+
+    <ImageView
+        android:id="@+id/iv_xiang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/x30"
+        android:background="@drawable/home_logo" />
+</RelativeLayout>
