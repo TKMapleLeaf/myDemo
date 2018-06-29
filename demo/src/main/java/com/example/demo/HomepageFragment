@@ -1,0 +1,517 @@
+package com.feng.myapp.ui.fragment;
+
+import android.app.Notification.Builder;
+import android.app.NotificationManager;
+import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v4.widget.NestedScrollView;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.FrameLayout.LayoutParams;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.feng.myapp.C;
+import com.feng.myapp.GlideImageLoader;
+import com.feng.myapp.R;
+import com.feng.myapp.adapter.Recommend2Adapter;
+import com.feng.myapp.adapter.RecommendPagerAdapter;
+import com.feng.myapp.base.BaseFragment;
+import com.feng.myapp.bean.Good;
+import com.feng.myapp.bean.ServiceType;
+import com.feng.myapp.bean.Store;
+import com.feng.myapp.bean.Version;
+import com.feng.myapp.contract.BannerContract;
+import com.feng.myapp.contract.HomepageContract;
+import com.feng.myapp.contract.StoreDetailContract;
+import com.feng.myapp.model.BannerModel;
+import com.feng.myapp.model.HomepageModel;
+import com.feng.myapp.presenter.BannerPresenter;
+import com.feng.myapp.presenter.HomepagePresenter;
+import com.feng.myapp.util.BannerUtil;
+import com.feng.myapp.util.EmptyUtils;
+import com.feng.myapp.util.ImageUtil;
+import com.feng.myapp.util.LogUtil;
+import com.feng.myapp.util.SPUtils;
+import com.feng.myapp.util.ScreenUtils;
+import com.feng.myapp.util.ToastUtils;
+import com.feng.myapp.view.Transformer;
+import com.uuzuche.lib_zxing.activity.CaptureActivity;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
+import com.youth.banner.Banner;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import me.relex.circleindicator.CircleIndicator;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
+import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
+import q.rorbin.badgeview.QBadgeView;
+
+
+
+public class HomepageFragment extends BaseFragment implements HomepageContract.View,
+        OnPageChangeListener, PermissionCallbacks,
+        BannerContract.BannerView, StoreDetailContract.StoreDetailView {
+
+
+    private static final int DOWNLOAD_NOTIFY_ID = 45612;
+    private static final int RC_CAMERA = 1547;
+    private static final int REQUEST_QRCODE = 12054;
+    private Builder builder;
+
+    private ArrayList<com.feng.myapp.bean.Banner > mBannerData;
+    private BannerPresenter mBannerPresenter = new BannerPresenter(this, new BannerModel());
+
+    private NotificationManager mNotificationManager;
+    private HomepagePresenter mPresenter = new HomepagePresenter(this, new HomepageModel());
+    private RecommendPagerAdapter mRecommendPagerAdapter;
+    private String mStoreId;
+    private HomepagePresenter persenter;
+    private QBadgeView qBadgeView;
+    private Recommend2Adapter recommend2Adapter;
+    private SPUtils spUtils;
+    private ArrayList<Integer> urls = new ArrayList();
+
+    @BindView(R.id.banner)
+    Banner mBanner;
+    @BindView(R.id.btn_break_rule)
+    Button mBtnBreakRule;
+    @BindView(R.id.btn_car_wash)
+    Button mBtnCarWash;
+    @BindView(R.id.btn_filling_oil)
+    Button mBtnFillingOil;
+    @BindView(R.id.btn_hhr)
+    Button mBtnHhr;
+    @BindView(R.id.btn_hysj)
+    Button mBtnHysj;
+    @BindView(R.id.btn_insurance)
+    Button mBtnInsurance;
+    @BindView(R.id.btn_mdrr)
+    Button mBtnMdrr;
+    @BindView(R.id.card1)
+    LinearLayout mCard1;
+    @BindView(R.id.indicator)
+    CircleIndicator mIndicator;
+    @BindView(R.id.iv_ad1)
+    ImageView mIvAd1;
+    @BindView(R.id.iv_ad2)
+    ImageView mIvAd2;
+    @BindView(R.id.iv_car_maintain)
+    ImageView mIvCarMaintain;
+    @BindView(R.id.iv_car_wash)
+    ImageView mIvCarWash;
+    @BindView(R.id.iv_refresh)
+    ImageView mIvRefresh;
+    @BindView(R.id.iv_refresh2)
+    ImageView mIvRefresh2;
+    @BindView(R.id.iv_scan_code)
+    ImageView mIvScanCode;
+    @BindView(R.id.ll)
+    LinearLayout mLl;
+    @BindView(R.id.ll_business_list)
+    LinearLayout mLlBusinessList;
+    @BindView(R.id.ll_car_business)
+    LinearLayout mLlCarBusiness;
+    @BindView(R.id.ll_car_wash)
+    LinearLayout mLlCarWash;
+    @BindView(R.id.ll_rl)
+    RelativeLayout mLlRl;
+    @BindView(R.id.ll_shop)
+    LinearLayout mLlShop;
+    @BindView(R.id.ll_toolbar)
+    LinearLayout mLlToolbar;
+    @BindView(R.id.nsv)
+    NestedScrollView mNsv;
+    @BindView(R.id.sb)
+    android.view.View mSb;
+    @BindView(R.id.tv_location)
+    TextView mTvLocation;
+    @BindView(R.id.tv_search)
+    TextView mTvSearch;
+    @BindView(R.id.vp_recommend)
+    ViewPager mVpRecommend;
+    @BindView(R.id.vp_recommend2)
+    ViewPager mVpRecommend2;
+
+
+
+    @Override
+    protected int getContentViewLayoutID() {
+        return R.layout.fragment_home;
+    }
+
+    @Override
+    public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        persenter = new HomepagePresenter(this, new HomepageModel());
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+
+    @Override
+    protected void initData() {
+    }
+
+    @Override
+    public void onResume() {
+        updateLocation();
+        super.onResume();
+    }
+
+    @Override
+    protected void initView() {
+
+        spUtils = SPUtils.getInstance(C.CONFIG);
+
+        mLlToolbar.getBackground().mutate().setAlpha(0);
+
+        urls.add(Integer.valueOf(2130837687));
+        urls.add(Integer.valueOf(2130837687));
+        urls.add(Integer.valueOf(2130837687));
+
+        mVpRecommend.setPageTransformer(false, new Transformer());
+        mVpRecommend.setOffscreenPageLimit(3);
+
+        mNsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+
+                if (scrollY < mBanner.getHeight()) {
+                    mLlToolbar.getBackground().mutate().setAlpha((int) (255.0f * (((float) scrollY) / ((float)mBanner.getHeight()))));
+                } else {
+                    mLlToolbar.getBackground().mutate().setAlpha(255);
+                }
+            }
+        });
+
+        setCenterBannerHeight(mIvCarMaintain);
+        setCenterBannerHeight(mIvCarWash);
+        setCenterBannerHeight(mIvAd1);
+        setCenterBannerHeight(mIvAd2);
+
+        mTvSearch.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+//                HomepageFragment.access$000(this$0, SearchActivity.class);
+            }
+        });
+
+        List<String> images = new ArrayList<>();
+        String url = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1515145463010&di=a1dd4d090ba721ab1d862be5c7f3c0fe&imgtype=0&src=http%3A%2F%2Fpic.qiantucdn.com%2F58pic%2F20%2F03%2F55%2F37V58PIC94I_1024.jpg";
+        String a = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1515743667&di=35fda1a541648c9939716dcbc5f948d1&imgtype=jpg&er=1&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F17%2F28%2F79%2F54d3189650a83_1024.jpg";
+        images.add(url);
+        images.add(a);
+        images.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1515148990837&di=041b5fc23db53e40680fd5da3d3b34c1&imgtype=0&src=http%3A%2F%2Fpic.qiantucdn.com%2F58pic%2F19%2F39%2F24%2F82w58PICgiM_1024.jpg");
+        images.add(a);
+
+        //设置图片加载器
+        mBanner.setImageLoader(new GlideImageLoader());
+        //设置图片集合
+        mBanner.setImages(images);
+        //banner设置方法全部调用完毕时最后调用
+        mBanner.start();
+
+      /*  mBanner.setBannerStyle(1).setIndicatorGravity(6)
+                .setImageLoader(new GlideImageLoader())
+                .setImages(urls).setOnBannerListener(new OnBannerListener() {
+            @Override
+            public void OnBannerClick(int position) {
+                if (EmptyUtils.isNotEmpty(mBannerData)) {
+                    BannerUtil.clickBanner(mBannerData.get(position), getActivity());
+                }
+            }
+        }).start();*/
+
+        mBanner.setOnPageChangeListener(this);
+
+        mIvRefresh2.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+              //  HomepageFragment.access$200(this$0).getRecommendGood();
+                mPresenter.getRecommendGood();
+            }
+        });
+        mBtnFillingOil.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+              //  HomepageFragment.access$300(this$0, FuelUpActivity.class);
+            }
+        });
+        mBtnBreakRule.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+             //   HomepageFragment.access$400(this$0, BreakRulesActivity.class);
+            }
+        });
+        mBtnInsurance.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+              //  HomepageFragment.access$500(this$0, NewInsuranceActivity.class);
+            }
+        });
+        mIvScanCode.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+              //  HomepageFragment.access$600(this$0, MessageCenterActivity.class);
+            }
+        });
+        mBtnCarWash.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+                ToastUtils.showLong((CharSequence) "功能正在开发中..");
+            }
+        });
+        mLlShop.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+               // HomepageFragment.access$700(this$0, ShoppingMallActivity.class);
+            }
+        });
+
+        mLlCarBusiness.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+                if (mLlBusinessList.getVisibility() == android.view.View.GONE) {
+                    mLlBusinessList.setVisibility(android.view.View.VISIBLE);
+                    mLlBusinessList.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.business_list_in));
+                    return;
+                }
+                mLlBusinessList.setVisibility(android.view.View.GONE);
+            }
+        });
+
+        mBannerPresenter.getAdList("index");
+        mPresenter.getBanner();
+        mPresenter.getRecommendStore();
+        mPresenter.getRecommendGood();
+        mPresenter.update();
+        setBadgeView();
+    }
+
+    private void setCenterBannerHeight(ImageView v) {
+        LayoutParams layoutParams = (LayoutParams) v.getLayoutParams();
+        layoutParams.height = (ScreenUtils.getScreenWidth() / 2) - getResources().getDimensionPixelOffset(R.dimen.x60);
+        v.setLayoutParams(layoutParams);
+    }
+
+    private void setBadgeView() {
+//        if (spUtils.getBoolean(C.HAS_WULIU_MSG, false) || spUtils.getBoolean(C.HAS_ORDER_MSG, false) || spUtils.getBoolean(C.HAS_SYS_MSG, false)) {
+//        }
+            qBadgeView = new QBadgeView(getContext());
+            qBadgeView.bindTarget(mIvScanCode).setBadgeGravity(8388661).setBadgeText("6");
+    }
+
+    private void updateLocation() {
+        String city = SPUtils.getInstance(C.CONFIG).getString("city");
+        if (EmptyUtils.isNotEmpty(city)) {
+            setLocation(city);
+        }
+    }
+
+    public void setLocation(String city) {
+        mTvLocation.setText(city);
+    }
+
+
+    @Override
+    public void setBanner(ArrayList<com.feng.myapp.bean.Banner > result) {
+        mBannerData = result;
+        mBanner.update(result);
+    }
+
+    @Override
+    public void setBanner2(final ArrayList<com.feng.myapp.bean.Banner > result) {
+        LogUtil.d(result.size() + "http");
+        if (result.size() >= 4) {
+            ImageUtil.displayImage(this, mIvCarMaintain, ((com.feng.myapp.bean.Banner ) result.get(0)).getAd_url());
+            mIvCarMaintain.setOnClickListener(new android.view.View.OnClickListener() {
+                @Override
+                public void onClick(android.view.View view) {
+                    BannerUtil.clickBanner(result.get(0), getActivity());
+                }
+            });
+            ImageUtil.displayImage(this, mIvCarWash, ((com.feng.myapp.bean.Banner ) result.get(1)).getAd_url());
+            mIvCarWash.setOnClickListener(new android.view.View.OnClickListener() {
+                @Override
+                public void onClick(android.view.View view) {
+                    BannerUtil.clickBanner(result.get(1), getActivity());
+                }
+            });
+            ImageUtil.displayImage(this, mIvAd1, ((com.feng.myapp.bean.Banner ) result.get(2)).getAd_url());
+            mIvAd1.setOnClickListener(new android.view.View.OnClickListener() {
+                @Override
+                public void onClick(android.view.View view) {
+                    BannerUtil.clickBanner(result.get(2), getActivity());
+                }
+            });
+            ImageUtil.displayImage(this, mIvAd2, ((com.feng.myapp.bean.Banner ) result.get(3)).getAd_url());
+            mIvAd2.setOnClickListener(new android.view.View.OnClickListener() {
+                @Override
+                public void onClick(android.view.View view) {
+                    BannerUtil.clickBanner(result.get(3), getActivity());
+                }
+            });
+        }
+    }
+
+    @Override
+    public void setRecommendGood(ArrayList<Good> result) {
+        if (result.size() != 0) {
+            recommend2Adapter = new Recommend2Adapter(getActivity(), result);
+            mVpRecommend2.setPageTransformer(false, new Transformer());
+            mVpRecommend2.setOffscreenPageLimit(3);
+            mVpRecommend2.setAdapter(recommend2Adapter);
+            mVpRecommend2.setCurrentItem(40, false);
+        }
+    }
+
+    @Override
+    public void setRecommendStore(ArrayList<Store> result) {
+        if (result.size() != 0) {
+            mRecommendPagerAdapter = new RecommendPagerAdapter(getActivity());
+            mRecommendPagerAdapter.setList(result);
+            mVpRecommend.setAdapter(mRecommendPagerAdapter);
+            mVpRecommend.setCurrentItem(40, false);
+        }
+    }
+
+    @Override
+    public void setVersionInfo(final Version versionInfo) {
+
+        try {
+            if (Integer.parseInt(versionInfo.getCode()) <= getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionCode) {
+                return;
+            }
+            if ("0".equals(versionInfo.getIs_force())) {
+                new MaterialDialog.Builder(getActivity())
+                        .title((CharSequence) "版本更新")
+                        .content(versionInfo.getDescribed()).positiveText((CharSequence) "马上更新")
+                        .negativeText((CharSequence) "暂不更新")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                              //  HomepageFragment.access$800(this$0, Environment.getExternalStorageDirectory().getAbsolutePath() + "/yunxi/", versionInfo);
+                            }
+                        })
+                        .show();
+                return;
+            }
+
+            startDownloadService(Environment.getExternalStorageDirectory().getAbsolutePath() + "/ya/", versionInfo);
+
+            MaterialDialog mProgressDialog = new MaterialDialog.Builder(getContext())
+                    .customView((int) R.layout.dialog_loading, false)
+                    .build();
+
+            ((TextView) mProgressDialog.getCustomView().findViewById(R.id.tv)).setText("更新中..");
+            mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.show();
+
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void startDownloadService(String filePath, Version versionInfo) {
+       // ((MainActivity) getActivity()).startDownloadService(filePath, versionInfo);
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+    }
+
+    @OnClick({R.id.ll_car_wash})
+    public void onMLlCarWashClicked() {
+        scanCode();
+    }
+
+    @OnClick({R.id.tv_location})
+    public void onSelectCity() {
+      //  readyGo(SelectCityActivity.class);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_QRCODE && data != null) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                if (bundle.getInt(CodeUtils.RESULT_TYPE) == 1) {
+                    String result = bundle.getString(CodeUtils.RESULT_STRING);
+                    LogUtil.d(result);
+                   // WebViewActivity.newInstance(getActivity(), "http://xcj.51meets.com/h5/checkControl.jsp?code=" + result, false);
+                } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == 2) {
+                    LogUtil.d("扫码失败");
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, new Object[0]);
+    }
+
+    @AfterPermissionGranted(1547)
+    public void scanCode() {
+        String[] per = new String[]{"android.permission.CAMERA"};
+        if (EasyPermissions.hasPermissions(getContext(), per)) {
+           // startActivityForResult(new Intent(getActivity(), ScanCodeActivity.class), REQUEST_QRCODE);
+        } else {
+            EasyPermissions.requestPermissions(this, "请允许打开相机", RC_CAMERA, per);
+        }
+    }
+
+    @Override
+    public void setStore(Store store) {
+      //  StoreDetailActivity.newIntent(getActivity(), store);
+    }
+
+    @Override
+    public String getStoreId() {
+        return mStoreId;
+    }
+
+    @Override
+    public void setServiceType(ArrayList<ServiceType> arrayList) {
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> list) {
+        startActivityForResult(new Intent(getActivity(), CaptureActivity.class), REQUEST_QRCODE);
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> list) {
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+}
