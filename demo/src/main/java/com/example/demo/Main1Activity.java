@@ -3,7 +3,7 @@ package com.example.demo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class Main1Activity extends AppCompatActivity {
     String url = "http://img2.niutuku.com/desk/130220/30/30-niutuku.com-999.jpg";
     String gif = "http://img.zcool.cn/community/018dd95983d5010000002129143892.gif";
     String loading = "http://img.zcool.cn/community/018cf6554251780000019ae970ca87.jpg";
@@ -11,7 +11,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main1);
 
      /*   Button bt1 = findViewById(R.id.button);
         Button bt2 = findViewById(R.id.button2);
