@@ -1,0 +1,116 @@
+package com.feng.myapp.view;
+
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.IdRes;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager.LayoutParams;
+import android.widget.PopupWindow;
+
+public class CommonPopupWindow extends PopupWindow {
+
+    private Context mContext;
+
+    public static class Builder {
+        private boolean isShowAnima = false;
+        private float mBackground = 0.0f;
+        private int mCancelId = 0;
+        private Context mContext;
+        private int mHeight = -2;
+        private int mResId;
+        private int mStyleId;
+        private boolean mTouchable = false;
+        private View mView;
+        private int mWidth = -2;
+
+        public Builder(Context context) {
+            this.mContext = context;
+        }
+
+        public Builder setView(int resId) {
+            this.mResId = resId;
+            this.mView = null;
+            return this;
+        }
+
+        public Builder setView(View view) {
+            this.mView = view;
+            this.mResId = 0;
+            return this;
+        }
+
+        public Builder setWidthAndHeight(int width, int height) {
+            this.mWidth = width;
+            this.mHeight = height;
+            return this;
+        }
+
+        public Builder setBackGroundLevel(float lv) {
+            this.mBackground = lv;
+            return this;
+        }
+
+        public Builder setOutsideTouchable(boolean touchable) {
+            this.mTouchable = touchable;
+            return this;
+        }
+
+        public Builder setAnimationStyle(int styleId) {
+            this.isShowAnima = true;
+            this.mStyleId = styleId;
+            return this;
+        }
+
+        public Builder setCancelResId(@IdRes int id) {
+            this.mCancelId = id;
+            return this;
+        }
+
+        public CommonPopupWindow create() {
+            final CommonPopupWindow popupWindow = new CommonPopupWindow(this.mContext);
+            if (this.mResId == 0) {
+                popupWindow.setContentView(this.mView);
+            } else {
+                popupWindow.setContentView(LayoutInflater.from(this.mContext).inflate(this.mResId, null));
+            }
+            if (this.mCancelId != 0) {
+                popupWindow.getContentView().findViewById(this.mCancelId).setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                    }
+                });
+            }
+            popupWindow.setWidth(this.mWidth);
+            popupWindow.setHeight(this.mHeight);
+            Window window = ((Activity) this.mContext).getWindow();
+            LayoutParams layoutParams = window.getAttributes();
+            layoutParams.alpha = this.mBackground;
+            window.setAttributes(layoutParams);
+            popupWindow.setOutsideTouchable(this.mTouchable);
+            popupWindow.setFocusable(this.mTouchable);
+            popupWindow.setBackgroundDrawable(new ColorDrawable(0));
+            if (this.isShowAnima) {
+                popupWindow.setAnimationStyle(this.mStyleId);
+            }
+            return popupWindow;
+        }
+    }
+
+    public CommonPopupWindow(Context context) {
+        this.mContext = context;
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        Window window = ((Activity) this.mContext).getWindow();
+        LayoutParams layoutParams = window.getAttributes();
+        layoutParams.alpha = 1.0f;
+        window.setAttributes(layoutParams);
+    }
+}
