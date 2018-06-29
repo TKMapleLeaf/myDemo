@@ -1,0 +1,446 @@
+package com.feng.myapp.ui.fragment;
+
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseQuickAdapter.RequestLoadMoreListener;
+import com.chad.library.adapter.base.listener.SimpleClickListener;
+import com.feng.myapp.C;
+import com.feng.myapp.GlideImageLoader;
+import com.feng.myapp.R;
+import com.feng.myapp.adapter.StoreListAdapter;
+import com.feng.myapp.base.BaseFragment;
+import com.feng.myapp.bean.Province;
+import com.feng.myapp.bean.Scope;
+import com.feng.myapp.bean.Store;
+import com.feng.myapp.contract.BannerContract.BannerView;
+import com.feng.myapp.contract.StoreListContract.StoreListView;
+import com.feng.myapp.model.BannerModel;
+import com.feng.myapp.model.StoreListModel;
+import com.feng.myapp.presenter.BannerPresenter;
+import com.feng.myapp.presenter.StoreListPresenter;
+import com.feng.myapp.util.EmptyUtils;
+import com.feng.myapp.util.IntentUtils;
+import com.feng.myapp.util.SPUtils;
+import com.feng.myapp.view.CommonPopupWindow;
+import com.feng.myapp.view.CommonPopupWindow.Builder;
+import com.youth.banner.Banner;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
+public class StoreFragment extends BaseFragment implements StoreListView, BannerView {
+
+    private View head;
+    private int index = 1;
+    private StoreListAdapter mAdapter;
+    private Banner mBanner;
+    private ArrayList<com.feng.myapp.bean.Banner> mBannerData;
+    private BannerPresenter mBannerPresenter = new BannerPresenter(this, new BannerModel());
+    private String mBusinessScope;
+    private String mCity;
+    private List<Store> mData = new ArrayList();
+
+    private LinearLayout mLlCilckCity;
+    private LinearLayout mLlCilckFilter;
+    private LinearLayout mLlFilter;
+
+
+    private StoreListPresenter mPresenter = new StoreListPresenter(this, new StoreListModel());
+    private String mRegionId;
+    private SPUtils mSPUtils = SPUtils.getInstance(C.CONFIG);
+
+    @BindView(R.id.iv_return)
+    ImageView mIvReturn;
+    @BindView(R.id.iv_scan_code)
+    ImageView mIvScanCode;
+    @BindView(R.id.ll_filter)
+    LinearLayout mLlFilterHide;
+    @BindView(R.id.ll_hide)
+    LinearLayout mLlHide;
+    @BindView(R.id.ll_local)
+    LinearLayout mLlLocalHide;
+    @BindView(R.id.ll_sort)
+    LinearLayout mLlSortHide;
+    @BindView(R.id.ll_toolbar)
+    LinearLayout mLlToolbar;
+    @BindView(R.id.rv)
+    RecyclerView mRv;
+    @BindView(R.id.sb)
+    View mSb;
+    @BindView(R.id.tv_city)
+    TextView mTvCityHide;
+    @BindView(R.id.tv_filter)
+    TextView mTvFilterHide;
+    @BindView(R.id.tv_search)
+    TextView mTvSearch;
+
+    private TextView mTvFilter;
+    private TextView mTvCity;
+    private LinearLayout mLlSort;
+    private LinearLayout mLlLocal;
+
+
+    private Unbinder unbinder;
+
+    static /* synthetic */ int access$104(StoreFragment x0) {
+        int i = x0.index + 1;
+        x0.index = i;
+        return i;
+    }
+
+
+    @Override
+    protected int getContentViewLayoutID() {
+        return R.layout.fragment_store_;
+    }
+
+    @Override
+    protected void initData() {
+    }
+
+    @Override
+    protected void initView() {
+
+        mLlToolbar.getBackground().mutate().setAlpha(0);
+
+        for (int i = 0; i < 20; i++) {
+            Store store = new Store();
+            mData.add(store);
+        }
+
+        mAdapter = new StoreListAdapter(mData);
+        mAdapter.setHeaderAndEmpty(true);
+        mRv.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRv.setAdapter(mAdapter);
+
+        mRv.addOnItemTouchListener(new SimpleClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                // StoreDetailActivity.newIntent(getActivity(), (Store) mAdapter.getItem(position));
+            }
+
+            @Override
+            public void onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+            }
+
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                if (view.getId() == R.id.btn_call) {
+                    startActivity(IntentUtils.getDialIntent(((Store) mAdapter.getItem(position)).getMobile()));
+                }
+            }
+
+            @Override
+            public void onItemChildLongClick(BaseQuickAdapter adapter, View view, int position) {
+            }
+        });
+
+        mAdapter.setOnLoadMoreListener(new RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                mPresenter.getStoreList(StoreFragment.access$104(StoreFragment.this));
+            }
+        }, mRv);
+
+        mRv.addOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (Math.abs(mAdapter.getHeaderLayout().getTop()) <= mLlToolbar.getHeight()) {
+                    mLlToolbar.getBackground().mutate()
+                            .setAlpha((int) (255.0f * (((float) Math.abs(mAdapter.getHeaderLayout().getTop())) / ((float) mLlToolbar.getHeight()))));
+                } else {
+                    mLlToolbar.getBackground().mutate().setAlpha(255);
+                }
+
+                if (Math.abs(mAdapter.getHeaderLayout().getTop()) <= getResources().getDimensionPixelOffset(R.dimen.x560) - mLlToolbar.getHeight()) {
+                    if (mLlHide.getVisibility() == View.VISIBLE) {
+                        mLlHide.setVisibility(View.GONE);
+                    }
+                } else if (mLlHide.getVisibility() == View.GONE) {
+                    mLlHide.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        mTvSearch.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //  readyGo(SearchActivity.class);
+            }
+        });
+
+        mPresenter.getStoreList(1);
+        mIvScanCode.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                readyGo(TestActivity.class);
+            }
+        });
+
+        mBannerPresenter.getAdList("store");
+        initHead();
+    }
+
+    private void initHead() {
+
+
+        List<String> images = new ArrayList<>();
+        String url = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1515145463010&di=a1dd4d090ba721ab1d862be5c7f3c0fe&imgtype=0&src=http%3A%2F%2Fpic.qiantucdn.com%2F58pic%2F20%2F03%2F55%2F37V58PIC94I_1024.jpg";
+        String a = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1515743667&di=35fda1a541648c9939716dcbc5f948d1&imgtype=jpg&er=1&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F17%2F28%2F79%2F54d3189650a83_1024.jpg";
+        images.add(url);
+        images.add(a);
+        images.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1515148990837&di=041b5fc23db53e40680fd5da3d3b34c1&imgtype=0&src=http%3A%2F%2Fpic.qiantucdn.com%2F58pic%2F19%2F39%2F24%2F82w58PICgiM_1024.jpg");
+        images.add(a);
+
+
+        head = LayoutInflater.from(getActivity()).inflate(R.layout.head_store_list, null);
+        mBanner = (Banner) head.findViewById(R.id.banner);
+    /*    mBanner.setImageLoader(new GlideImageLoader());
+        ArrayList<Integer> mPics = new ArrayList();
+        mPics.add(Integer.valueOf(2130837687));
+        mPics.add(Integer.valueOf(2130837687));
+        mPics.add(Integer.valueOf(2130837687));
+        mBanner.setImages(mPics).setOnBannerListener(new OnBannerListener() {
+            @Override
+            public void OnBannerClick(int position) {
+                if (EmptyUtils.isNotEmpty(mBannerData)) {
+                    BannerUtil.clickBanner((com.feng.myapp.bean.Banner) mBannerData.get(position), getActivity());
+                }
+            }
+        }).start();*/
+
+        //设置图片加载器
+        mBanner.setImageLoader(new GlideImageLoader());
+        //设置图片集合
+        mBanner.setImages(images);
+        //banner设置方法全部调用完毕时最后调用
+        mBanner.start();
+
+        mAdapter.addHeaderView(head);
+
+        mTvCity = (TextView) head.findViewById(R.id.tv_city);
+        mTvFilter = (TextView) head.findViewById(R.id.tv_filter);
+        mCity = mSPUtils.getString("city");
+        if (EmptyUtils.isNotEmpty(mCity)) {
+            mTvCity.setText(mCity);
+        }
+        mLlLocal = (LinearLayout) head.findViewById(R.id.ll_local);
+        mLlFilter = (LinearLayout) head.findViewById(R.id.ll_filter);
+        mLlSort = (LinearLayout) head.findViewById(R.id.ll_sort);
+
+        mLlFilter.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLlCilckFilter = mLlFilter;
+                mPresenter.getFilter();
+            }
+        });
+
+        mLlLocal.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLlCilckCity = mLlLocal;
+                mPresenter.getRegion();
+            }
+        });
+    }
+
+    @Override
+    public void setStoreList(ArrayList<Store> list) {
+
+        if (index == 1 && list.size() == 0) {
+            mAdapter.setNewData(null);
+            mAdapter.setEmptyView(R.layout.item_empty_view);
+            return;
+        }
+        if (index != 1) {
+            mAdapter.addData(list);
+        } else {
+            mAdapter.setNewData(list);
+        }
+        if (list.size() == 0) {
+            mAdapter.loadMoreEnd(true);
+        } else {
+            mAdapter.loadMoreComplete();
+        }
+    }
+
+    @Override
+    public String getCityName() {
+        mCity = mSPUtils.getString("city");
+        return mCity;
+    }
+
+    @Override
+    public void setFilter(ArrayList<Scope> result) {
+        final CommonPopupWindow popupWindow = new Builder(getContext())
+                .setBackGroundLevel(1.0f)
+                .setAnimationStyle(R.style.anim_popup_filter)
+                .setOutsideTouchable(true)
+                .setView((int) R.layout.popup_filter)
+                .create();
+
+        LinearLayout ll = (LinearLayout) ((NestedScrollView) popupWindow.getContentView()).findViewById(R.id.ll);
+
+        TextView all = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.item_filter, null);
+        all.setText("全部");
+        all.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBusinessScope = null;
+                mTvFilter.setText("全部");
+                mTvFilterHide.setText("全部");
+                if (popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                }
+                index = 1;
+                mPresenter.getStoreList(index);
+            }
+        });
+        ll.addView(all);
+
+        Iterator it = result.iterator();
+        while (it.hasNext()) {
+            final Scope scope = (Scope) it.next();
+            TextView v = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.item_filter, null);
+            v.setText(scope.getName());
+            v.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mBusinessScope = scope.getScope_id();
+                    mTvFilter.setText(scope.getName());
+                    mTvFilterHide.setText(scope.getName());
+                    if (popupWindow.isShowing()) {
+                        popupWindow.dismiss();
+                    }
+                    index = 1;
+                    mPresenter.getStoreList(index);
+                }
+            });
+            ll.addView(v);
+        }
+        if (!isHidden()) {
+            popupWindow.showAsDropDown(mLlCilckFilter, (-mLlCilckFilter.getMeasuredWidth()) / 2, 0);
+        }
+    }
+
+    @Override
+    public void setRegions(ArrayList<Province> result) {
+
+        final CommonPopupWindow popupWindow = new Builder(getContext())
+                .setBackGroundLevel(1.0f)
+                .setAnimationStyle(R.style.anim_popup_filter)
+                .setOutsideTouchable(true)
+                .setView((int) R.layout.popup_filter)
+                .create();
+
+        LinearLayout ll = (LinearLayout) ((NestedScrollView) popupWindow.getContentView()).findViewById(R.id.ll);
+        TextView all = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.item_filter, null);
+        all.setText("全部");
+        all.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRegionId = null;
+                mTvCity.setText("全部");
+                mTvCityHide.setText("全部");
+                if (popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                }
+                index = 1;
+                mPresenter.getStoreList(index);
+            }
+        });
+        ll.addView(all);
+
+        Iterator it = result.iterator();
+        while (it.hasNext()) {
+            final Province province = (Province) it.next();
+            TextView v = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.item_filter, null);
+            v.setText(province.getName());
+            v.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mRegionId = province.getRegion_id();
+                    mTvCity.setText(province.getName());
+                    mTvCityHide.setText(province.getName());
+                    if (popupWindow.isShowing()) {
+                        popupWindow.dismiss();
+                    }
+                    index = 1;
+                    mPresenter.getStoreList(index);
+                }
+            });
+            ll.addView(v);
+        }
+        if (!isHidden()) {
+            popupWindow.showAsDropDown(mLlCilckCity, (-mLlCilckCity.getMeasuredWidth()) / 2, 0);
+        }
+    }
+
+    @Override
+    public String getRegionId() {
+        return mRegionId;
+    }
+
+    @Override
+    public String getBusinessScope() {
+        return mBusinessScope;
+    }
+
+    @Override
+    public void setBanner(ArrayList<com.feng.myapp.bean.Banner> result) {
+        mBannerData = result;
+        mBanner.update(result);
+    }
+
+    @OnClick({R.id.iv_return})
+    public void onViewClicked() {
+        // ((MainActivity) getActivity()).gotoHomepage();
+    }
+
+    public void refreshList() {
+        index = 1;
+        mPresenter.getStoreList(index);
+        mCity = mSPUtils.getString("city");
+        if (EmptyUtils.isNotEmpty(mCity)) {
+            mTvCity.setText(mCity);
+            mTvCityHide.setText(mCity);
+            return;
+        }
+        mTvCity.setText("广州");
+        mTvCityHide.setText("广州");
+    }
+
+    @OnClick({R.id.ll_local, R.id.ll_filter, R.id.ll_sort})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.ll_filter:
+                mLlCilckFilter = mLlFilterHide;
+                mPresenter.getFilter();
+                return;
+            case R.id.ll_local:
+                mLlCilckCity = mLlLocalHide;
+                mPresenter.getRegion();
+                return;
+            default:
+                return;
+        }
+    }
+}
