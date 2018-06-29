@@ -1,0 +1,151 @@
+package com.feng.myapp.ui.activity;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.widget.RadioGroup;
+
+import com.feng.myapp.R;
+import com.feng.myapp.ui.fragment.DefaultFragment;
+import com.feng.myapp.ui.fragment.HomeFragment;
+import com.feng.myapp.ui.fragment.HomepageFragment;
+import com.feng.myapp.ui.fragment.MineFragment;
+import com.feng.myapp.ui.fragment.StoreFragment;
+import com.feng.myapp.util.ToastUtils;
+
+import butterknife.ButterKnife;
+
+public class MainActivity extends AppCompatActivity {
+
+    private Fragment[] fragments;
+    private int lastShowFragment = 0;
+    private RadioGroup bottomContainer;
+    protected int fragmentContainerResId = 0;
+    protected Fragment currentFragment;
+    protected long mCurrentClick = 0;
+    protected long mLastClick = 0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        initview();
+        initListener();
+    }
+//android.support.v4.media.TransportMediator
+
+    private void initview() {
+
+        bottomContainer = (RadioGroup) findViewById(R.id.rg_menu);
+        HomeFragment fragment1 = new HomeFragment();
+        HomepageFragment fragment2 = new HomepageFragment();
+        StoreFragment fragment3 = new StoreFragment();
+        MineFragment fragment4 = new MineFragment();
+        fragments = new Fragment[]{fragment1, fragment2, fragment3, fragment4};
+
+        addOrReplaceFragment(fragment1, R.id.ll_content);
+        /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.ll_content, fragment1).show(fragment1).commit();*/
+    }
+
+    private void initListener() {
+        bottomContainer.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                if (checkedId == R.id.rb_shppingmall) {
+                   /* if (lastShowFragment != 0) {
+                        switchFrament(lastShowFragment, 0);
+                        lastShowFragment = 0;
+                    }*/
+                    addOrReplaceFragment(fragments[0]);
+                } else if (checkedId == R.id.rb_shop) {
+                   /* if (lastShowFragment != 1) {
+                        switchFrament(lastShowFragment, 1);
+                        lastShowFragment = 1;
+                    }*/
+                    addOrReplaceFragment(fragments[1]);
+                } else if (checkedId == R.id.rb_shoppingcart) {
+                   /* if (lastShowFragment != 2) {
+                        switchFrament(lastShowFragment, 2);
+                        lastShowFragment = 2;
+                    }*/
+                    addOrReplaceFragment(fragments[2]);
+                } else if (checkedId == R.id.rb_mine) {
+                    /*if (lastShowFragment != 3) {
+                        switchFrament(lastShowFragment, 3);
+                        lastShowFragment = 3;
+                    }*/
+                    addOrReplaceFragment(fragments[3]);
+                }
+            }
+        });
+    }
+
+
+    private void switchFrament(int lastShowFragment, int i) {
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.hide(fragments[lastShowFragment]);
+        if (!fragments[i].isAdded()) {
+            ft.add(R.id.ll_content, fragments[i]);
+        }
+        ft.show(fragments[i]).commitAllowingStateLoss();
+    }
+
+
+    public void addOrReplaceFragment(Fragment fragment) {
+        addOrReplaceFragment(fragment, 0);
+    }
+
+    /**
+     * 第一次加载的时候调用该方法设置resId
+     *
+     * @param fragment
+     * @param resId
+     */
+    public void addOrReplaceFragment(Fragment fragment, int resId) {
+        if (resId != 0) {
+            fragmentContainerResId = resId;
+        }
+        if (fragment == null) {
+            return;
+        }
+        if (currentFragment == null) {
+            getSupportFragmentManager().beginTransaction().add(resId, fragment).show(fragment).commitAllowingStateLoss();
+            currentFragment = fragment;
+            return;
+        }
+        if (fragment.isAdded()) {
+            getSupportFragmentManager().beginTransaction().hide(currentFragment).show(fragment).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().hide(currentFragment).add(fragmentContainerResId, fragment).show(fragment).commitAllowingStateLoss();
+        }
+        currentFragment = fragment;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode != 4 || event.getAction() != 0) {
+            return super.onKeyDown(keyCode, event);
+        }
+        doubleClickToExit();
+        return true;
+    }
+
+
+    public void doubleClickToExit() {
+        this.mCurrentClick = System.currentTimeMillis();
+        Log.e("haha",System.currentTimeMillis() + "  " + this.mLastClick);
+        if (this.mCurrentClick - this.mLastClick > 2000) {
+            ToastUtils.showShort("再次点击退出app");
+            this.mLastClick = System.currentTimeMillis();
+            return;
+        }
+        finish();
+    }
+
+}
