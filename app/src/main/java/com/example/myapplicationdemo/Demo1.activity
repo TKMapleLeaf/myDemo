@@ -1,0 +1,95 @@
+
+
+           <ImageView
+                android:id="@+id/iv_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/search" />
+
+            <EditText
+                android:id="@+id/et_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:background="@null"
+                android:hint="搜索商品"
+                android:imeOptions="actionSearch"
+                android:lines="1"
+                android:singleLine="true"
+                android:textSize="14sp" />
+
+private void initListener() {
+      
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                sumY += dy;
+                int px2dp = DensityUtil.px2dp(sumY);
+               
+                if (px2dp > 500){
+                    flSearch.setVisibility(View.VISIBLE);
+                }else {
+                    flSearch.setVisibility(View.GONE);
+                }
+
+                /*int bgColor = 0X00ffffff;
+                if (px2dp < 0) {
+                    bgColor = 0X00ffffff;
+                } else if (px2dp >500) {
+                    bgColor = 0Xffffff;
+                } else {
+                    bgColor = (int) evaluator.evaluate(sumY / duration, 0X00ffffff, 0Xffffff);
+                }
+
+                flSearch.setBackgroundColor(bgColor);*/
+            }
+        });
+
+        ivSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                search2action(etSearch.getText().toString().trim());
+            }
+        });
+
+        etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean isOK = true;
+                switch (actionId) {
+                    case EditorInfo.IME_ACTION_DONE:
+                        break;
+                    case EditorInfo.IME_ACTION_NONE:
+                        break;
+                    case EditorInfo.IME_ACTION_GO:
+                        break;
+                    case EditorInfo.IME_ACTION_SEARCH:
+                        search2action(etSearch.getText().toString().trim());
+                        break;
+                    case EditorInfo.IME_ACTION_SEND:
+                        break;
+                    case EditorInfo.IME_ACTION_NEXT:
+                        break;
+                    default:
+                        isOK = false;
+                        break;
+                }
+                return isOK;
+            }
+        });
+    }
+    private int sumY = 0;
+    private float duration = 600.0f;
+    private ArgbEvaluator evaluator = new ArgbEvaluator();
+
+    private void search2action(String key){
+        if (TextUtils.isEmpty(key)) {
+            return;
+        }
+        Intent intent = new Intent(getContext(), SearchGoodsActivity.class);
+        intent.putExtra("keywords", key);
+        startActivity(intent);
+    }
