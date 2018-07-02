@@ -1,0 +1,287 @@
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.Display;
+import android.view.View;
+import android.view.animation.Animation;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class TestActivity extends AppCompatActivity {
+
+    private ImageView imageView;
+    private ImageView ivShare;
+    private LinearLayout linearLayout;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_test);
+        imageView = findViewById(R.id.iv);
+        ivShare = findViewById(R.id.iv_share);
+        linearLayout = findViewById(R.id.ll);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+//              Bitmap bitmap = shotActivityNoBar(TestActivity.this);
+                Bitmap ab = loadBitmapFromView(ivShare, ivShare.getWidth(), ivShare.getHeight());
+                saveImageToGallery(TestActivity.this,ab);
+                imageView.setImageBitmap(ab);
+
+                int[] destLocation = new int[2];
+                imageView.getLocationInWindow(destLocation);
+
+                int[] srcLocation = new int[2];
+                ivShare.getLocationInWindow(srcLocation);
+
+                Animation animation = AnimationUtils.getSetAnimation(destLocation, srcLocation, 0);
+
+                ivShare.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.VISIBLE);
+
+            }
+        }, 300);
+
+    }
+
+    public void action(View view) {
+        Bitmap bitmap = shotActivityNoBar(this);
+        imageView.setImageBitmap(bitmap);
+        ivShare.setVisibility(View.GONE);
+    }
+
+    public static Bitmap loadBitmapFromView(View v, int width, int height) {
+        Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bmp);
+        v.draw(c);
+        // 缩小图片
+        Matrix matrix = new Matrix();
+        //长和宽放大缩小的比例
+        matrix.postScale(0.5f,0.5f);
+        bmp = Bitmap.createBitmap(bmp,0,0, bmp.getWidth(),bmp.getHeight(),matrix,true);
+        return bmp;
+    }
+
+    /**
+     * 将图片保存到本地
+     *
+     * @param context
+     * @param bmp
+     */
+    public static void saveImageToGallery(Context context, Bitmap bmp) {
+        // 首先保存图片
+        File appDir = new File(Environment.getExternalStorageDirectory(), "Pictures");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        String fileName = "_" + System.currentTimeMillis() + ".jpg";
+        File file = new File(appDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 其次把文件插入到系统图库(Glide中可能会重复保存1张)
+//        try {
+//            MediaStore.Images.Media.insertImage(context.getContentResolver(),
+//                    file.getAbsolutePath(), fileName, null);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+        // 最后通知图库更新
+//        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + appDir.getPath())));
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(file.getPath()))));
+    }
+
+    private Bitmap ab(View v) {
+        Bitmap b = Bitmap.createBitmap(v.getLayoutParams().width, v.getLayoutParams().height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+        v.draw(c);
+        return b;
+    }
+
+
+    /**
+     * 1 Activity截图（带空白的状态栏）
+     *
+     * @param activity
+     * @return
+     */
+    public Bitmap shotScreen(Activity activity) {
+        View view = activity.getWindow().getDecorView();
+        view.setDrawingCacheEnabled(true);
+        view.buildDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache(), 0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        view.setDrawingCacheEnabled(false);
+        view.destroyDrawingCache();
+        return bitmap;
+
+    }
+
+
+    /**
+     * 2 Activity截图（去掉状态栏）
+     *
+     * @param activity
+     * @return
+     */
+    public Bitmap shotActivityNoBar(Activity activity) {
+        // 获取windows中最顶层的view
+        View view = activity.getWindow().getDecorView();
+        view.buildDrawingCache();
+
+        // 获取状态栏高度
+        Rect rect = new Rect();
+        view.getWindowVisibleDisplayFrame(rect);
+        int statusBarHeights = rect.top;
+        Display display = activity.getWindowManager().getDefaultDisplay();
+
+        // 获取屏幕宽和高
+        int widths = display.getWidth();
+        int heights = display.getHeight();
+
+        // 允许当前窗口保存缓存信息
+        view.setDrawingCacheEnabled(true);
+
+        // 去掉状态栏
+        Bitmap bmp = Bitmap.createBitmap(view.getDrawingCache(), 0,
+                statusBarHeights, widths, heights - statusBarHeights);
+
+        // 销毁缓存信息
+        view.destroyDrawingCache();
+
+        return bmp;
+    }
+
+
+    /**
+     * 3 Fragment截图
+     *
+     * @param fragment
+     * @return
+     */
+    public Bitmap getFragmentBitmap(Fragment fragment) {
+        View v = fragment.getView();
+        v.buildDrawingCache(false);
+        return v.getDrawingCache();
+    }
+
+
+    /**
+     * 将bitmap保存在本地
+     *
+     * @param fileName
+     * @param bitmap
+     */
+    public void saveBitmapToFile(String fileName, Bitmap bitmap) {
+
+        if (TextUtils.isEmpty(fileName) || bitmap == null) {
+            return;
+        }
+
+        try {
+            File f = new File(fileName);
+            f.createNewFile();
+            FileOutputStream fOut = new FileOutputStream(f);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fOut);
+            fOut.flush();
+            fOut.close();
+        } catch (FileNotFoundException e) {
+            Log.i("ScreenShotUtil", "保存失败");
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 通知系统相册更新
+     *
+     * @param fileName
+     */
+    public void AlbumScan(String fileName) {
+        MediaScannerConnection.scanFile(getApplicationContext(), new String[]{fileName}, new String[]{"image/jpeg"}, null);
+    }
+
+    /**
+     * 创建分享的图片文件
+     */
+   /* public String createShareFile() {
+        Bitmap bitmap = createBitmap();
+        //将生成的Bitmap插入到手机的图片库当中，获取到图片路径
+        String filePath = MediaStore.Images.Media.insertImage(getContext().getContentResolver(),bitmap, null, null);
+        //及时回收Bitmap对象，防止OOM
+        if (!bitmap.isRecycled()) {
+            bitmap.recycle();
+        }
+        //转uri之前必须判空，防止保存图片失败
+        if (TextUtils.isEmpty(filePath)) {
+            return "";
+        }
+        return getRealPathFromURI(getContext(), Uri.parse(filePath));
+    }*/
+
+    /*   */
+
+    /**
+     * 创建分享Bitmap
+     *//*
+    private Bitmap createBitmap() {
+        //自定义ViewGroup，一定要手动调用测量，布局的方法
+//        measure(getLayoutParams().width, getLayoutParams().height);
+//        layout(0, 0, getMeasuredWidth(), getMeasuredHeight());
+        //如果图片对透明度无要求，可以设置为RGB_565
+        Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        draw(canvas);
+        return bitmap;
+    }*/
+    private static String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            if (cursor == null) {
+                return "";
+            }
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+}
