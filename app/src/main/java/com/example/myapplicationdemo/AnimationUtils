@@ -1,0 +1,299 @@
+
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
+
+public class AnimationUtils {
+
+    /**
+     *
+     LinearInterpolator(匀速）
+     AccelerateInterpolator（先慢后快）
+     AccelerateDecelerateInterpolator（先慢中快后慢）
+     DecelerateInterpolator（先快后慢）
+     CycleInterpolator（循环播放，速度为正弦曲线）
+     AnticipateInterpolator（先回撤，再匀速向前）
+     OvershootInterpolator（超过，拉回）
+     BounceInterpolator(回弹）
+     */
+
+    /**
+     * 位移动画
+     *
+     * @param destLocation
+     * @param srcLocation
+     * @return
+     */
+    public static Animation getSetAnimation(int[] destLocation, int[] srcLocation,int biancha) {
+        //定义一个动画集合
+        AnimationSet set = new AnimationSet(false);
+        //定义一个位移补间动画，X轴从0变化到目标位置，Y轴不变
+        TranslateAnimation translateX = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, destLocation[0] - srcLocation[0]+biancha,
+                Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0);
+        //控制动画数度 先慢后快
+        translateX.setInterpolator(new AccelerateInterpolator());
+        //定义一个位移补间动画，Y轴从0变化到目标位置，X轴不变
+        TranslateAnimation translateY = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0,
+                Animation.ABSOLUTE, 0, Animation.ABSOLUTE, destLocation[1] - srcLocation[1]);
+        //控制动画数度 先慢后快
+        translateY.setInterpolator(new AccelerateInterpolator());
+
+        //透明动画
+        AlphaAnimation alpha = new AlphaAnimation(1, 0.5f);
+
+        ScaleAnimation scaleAnimation = new ScaleAnimation(
+                1, 0.2f, 1, 0.2f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+
+        //添加动画到集合
+//        set.addAnimation(scaleAnimation);
+        set.addAnimation(translateX);
+        set.addAnimation(translateY);
+        set.addAnimation(alpha);
+
+        //设置动画持续时间
+        set.setDuration(1000);
+
+        return set;
+    }
+
+    /**
+     * 浮动动画
+     *
+     * @return
+     */
+    public static Animation getSetYAnimation() {
+
+        AnimationSet set = new AnimationSet(false);
+
+        //定义一个位移补间动画，Y轴从0变化到目标位置，X轴不变
+        TranslateAnimation translateY = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0,
+                Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 30);
+
+        translateY.setRepeatCount(Animation.INFINITE);
+        translateY.setRepeatMode(Animation.REVERSE);
+        translateY.setDuration(1000);
+
+        ScaleAnimation scaleAnimation = new ScaleAnimation(
+
+                1, 0.2f, 1, 0.2f,
+
+                Animation.RELATIVE_TO_SELF, 0.5f,
+
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        scaleAnimation.setRepeatCount(Animation.INFINITE);
+        scaleAnimation.setRepeatMode(Animation.REVERSE);
+        scaleAnimation.setDuration(1000);
+
+        //透明动画
+        AlphaAnimation alpha = new AlphaAnimation(1, 0.9f);
+        alpha.setRepeatCount(Animation.INFINITE);
+        alpha.setRepeatMode(Animation.REVERSE);
+        alpha.setDuration(1000);
+
+        //添加动画到集合
+//        set.addAnimation(scaleAnimation);
+        set.addAnimation(translateY);
+        set.addAnimation(alpha);
+
+        return set;
+    }
+
+    /**
+     * 透明动画
+     *
+     * @return
+     */
+    public static Animation getAlphaAnimation() {
+
+        //透明动画
+        AlphaAnimation alpha = new AlphaAnimation(1, 0.3f);
+        alpha.setRepeatCount(Animation.INFINITE);
+        alpha.setRepeatMode(Animation.REVERSE);
+        alpha.setDuration(500);
+
+        return alpha;
+    }
+
+    /**
+     * 隐藏动画
+     *
+     * @return
+     */
+    public static Animation getHiddenAlphaAnimation(final View view) {
+
+        //透明动画
+        AlphaAnimation alpha = new AlphaAnimation(1, 0.0f);
+        alpha.setRepeatCount(0);
+        alpha.setDuration(500);
+
+        alpha.setAnimationListener(new AnimationListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                super.onAnimationEnd(animation);
+                view.clearAnimation();
+                view.setVisibility(View.GONE);
+            }
+        });
+        return alpha;
+    }
+
+    /**
+     * 显示动画,并浮动
+     *
+     * @return
+     */
+    public static Animation getShowAlphaAnimation(final View view) {
+
+        //透明动画
+        AlphaAnimation alpha = new AlphaAnimation(0.0f, 1f);
+        alpha.setRepeatCount(0);
+        alpha.setDuration(800);
+
+        alpha.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                view.setVisibility(View.VISIBLE);
+                view.setAnimation(AnimationUtils.getSetYAnimation());
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        return alpha;
+    }
+
+    /**
+     * 直线动画,向上走动画
+     *
+     * @param srcLocation
+     * @return
+     */
+    public static Animation getLineAnimation(int srcLocation) {
+
+        AnimationSet set = new AnimationSet(false);
+
+        //定义一个位移补间动画，Y轴从0变化到目标位置，X轴不变
+        TranslateAnimation translateY = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0,
+                Animation.ABSOLUTE, 0, Animation.ABSOLUTE, srcLocation);
+
+        translateY.setRepeatCount(0);
+        translateY.setDuration(800);
+
+        //添加动画到集合
+        set.addAnimation(translateY);
+
+        return translateY;
+    }
+
+    /**
+     * 直线动画,从左往中间走动画
+     *
+     * @param myView
+     * @param srcLocation
+     * @param destLocation
+     */
+    public static AnimatorSet let2MiddleAnimation(View myView, int srcLocation, int destLocation) {
+
+        AnimatorSet set = new AnimatorSet();
+        ObjectAnimator transX = ObjectAnimator.ofFloat(myView, "translationX", srcLocation, destLocation);
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(myView, "alpha", 0.0f, 0.5f, 1.0f);
+        set.playTogether(transX, alpha);
+
+        set.setDuration(1000);
+        set.start();
+        return set;
+
+    }
+
+    /**
+     * 直线动画,从中间往右走动画
+     *
+     * @param myView
+     * @param srcLocation
+     * @param destLocation
+     */
+    public static ObjectAnimator middle2RightAnimation(View myView, int srcLocation, int destLocation) {
+
+        ObjectAnimator transX = ObjectAnimator.ofFloat(myView, "translationX", srcLocation, destLocation);
+        transX.setDuration(1000);
+        transX.start();
+        return transX;
+
+    }
+
+    public static void isShowCart(final View cart, final View cartEmpty, final boolean b) {
+        float from = 0.0f;
+        float to = 0.0f;
+        from = b ? 1.0f : 0.0f;
+        to = b ? 0.0f : 1.0f;
+
+        ObjectAnimator alpha1 = ObjectAnimator.ofFloat(cartEmpty, "alpha", from, 0.5f, to);
+        ObjectAnimator alpha2 = ObjectAnimator.ofFloat(cart, "alpha", to, 0.5f, from);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(alpha1, alpha2);
+        set.setDuration(3000);
+        set.start();
+
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                cart.setVisibility(b ? View.VISIBLE : View.GONE);
+                cartEmpty.setVisibility(b ? View.GONE : View.VISIBLE);
+            }
+        });
+    }
+
+    /**
+     * 缩放动画
+     *
+     * @return
+     */
+    public static Animation scaleAnimation() {
+
+
+        ScaleAnimation scaleAnimation = new ScaleAnimation(
+
+                1, 1.05f, 1, 1.05f,
+
+                Animation.RELATIVE_TO_SELF, 0.5f,
+
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        scaleAnimation.setRepeatCount(0);
+        scaleAnimation.setRepeatMode(Animation.RESTART);
+        scaleAnimation.setDuration(200);
+
+        return scaleAnimation;
+    }
+
+    public static class AnimationListenerAdapter implements Animation.AnimationListener {
+        @Override
+        public void onAnimationStart(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+    }
+}
