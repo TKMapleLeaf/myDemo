@@ -47,3 +47,10 @@ public class MyYAnimation extends Animation {
         camera.restore();
     }
 }
+
+
+//                MyYAnimation myYAnimation = new MyYAnimation();
+                //旋转的次数（无数次）
+//                myYAnimation.setRepeatCount(Animation.INFINITE);
+ //               myYAnimation.setRepeatCount(1);
+ //               imageView.startAnimation(myYAnimation);
