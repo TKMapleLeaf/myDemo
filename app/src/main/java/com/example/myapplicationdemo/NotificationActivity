@@ -1,0 +1,124 @@
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+
+
+public class NotificationActivity extends AppCompatActivity {
+
+    private static final int NOTIFY_ID = 1100;
+    private NotificationCompat.Builder builder;
+    private NotificationManager notificationManager;
+
+    public static final String PRIMARY_CHANNEL = "default";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_notification);
+        NotificationHelper();
+    }
+
+    public void notification(View view) {
+        initNotification("title","content",0,NOTIFY_ID);
+    }
+
+    /**
+     * 注册通知
+     */
+
+    public void NotificationHelper() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel chan1 = new NotificationChannel(PRIMARY_CHANNEL,
+                    getString(R.string.app_name) + "通知", NotificationManager.IMPORTANCE_DEFAULT);
+            //小红点颜色
+            chan1.setLightColor(Color.GREEN);
+            //是否在桌面icon右上角展示小红点
+            chan1.enableLights(true);
+            //设置在锁屏界面上显示这条通知
+            chan1.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            //是否在久按桌面图标时显示此渠道的通知
+            chan1.setShowBadge(true);
+            getManager().createNotificationChannel(chan1);
+        }
+    }
+
+
+    /**
+     * 获取通知管理
+     */
+    private NotificationManager getManager() {
+        if (notificationManager == null) {
+            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+        return notificationManager;
+    }
+
+
+    /**
+     * 初始化Notification通知
+     */
+    public void initNotification(String title, String text, int num, int id) {
+        builder = new NotificationCompat.Builder(this, PRIMARY_CHANNEL);
+        builder.setTicker("有新消息");
+        builder.setContentTitle(title);
+        builder.setContentText(text);
+        builder.setNumber(num);
+        builder.setAutoCancel(true);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher));
+        builder.setContentIntent(getDefaultIntent(title, text, id));
+//        builder.setDefaults(NotificationCompat.DEFAULT_ALL);
+        builder.setDefaults(Notification.DEFAULT_VIBRATE);
+        builder.setDefaults(Notification.DEFAULT_LIGHTS);
+
+        getManager().notify(NOTIFY_ID, builder.build());
+    }
+
+    /**
+     * 透传消息，启动通知栏显示信息
+     *
+     * @param title 通知栏标题
+     * @param text  通知正文
+     * @param num   同一消息数量
+     * @param id    哪一类型消息
+     */
+    private void showNotify(String title, String text, int num, int id) {
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setTicker("有新消息");
+        builder.setContentTitle(title);
+        builder.setContentText(text);
+        builder.setNumber(num);
+        builder.setAutoCancel(true);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher));
+        builder.setContentIntent(getDefaultIntent(title, text, id));
+//        builder.setDefaults(NotificationCompat.DEFAULT_ALL);
+        builder.setDefaults(Notification.DEFAULT_VIBRATE);
+        builder.setDefaults(Notification.DEFAULT_LIGHTS);
+
+        Notification notification = builder.build();
+        NotificationManager manger = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manger.notify(id, notification);
+    }
+
+    private PendingIntent getDefaultIntent(String title, String content, int id) {
+
+        Intent perIntent = new Intent(this, SettingActivity.class);
+        perIntent.putExtra("title", title);
+        perIntent.putExtra("content", content);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pIntent = PendingIntent.getActivity(this, id, perIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return pIntent;
+    }
+}
