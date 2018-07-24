@@ -1,0 +1,154 @@
+public class MainBnvActivity extends AppCompatActivity {
+   private Fragment[] mFragments;
+    private int currentTabIndex;
+    private BottomNavigationView bottomNavigationView;
+
+    private HomeOneNewFragment oneFragment;
+    private HomeTwoFragment twoFragment;
+    private HomeThreeFragment threeFragment;
+    private HomeFourFragment fourFragment;
+
+    private static final String HOME_ONE_KEY = "HomeOneNewFragment";
+    private static final String HOME_TWO_KEY = "HomeTwoFragment";
+    private static final String HOME_THREE_KEY = "HomeThreeFragment";
+    private static final String HOME_FOUR_KEY = "HomeFourFragment";
+    
+      @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main_bnv);
+  
+        initViews();
+
+        if (savedInstanceState != null) {
+            oneFragment = (HomeOneNewFragment) getSupportFragmentManager().getFragment(savedInstanceState, HOME_ONE_KEY);
+            twoFragment = (HomeTwoFragment) getSupportFragmentManager().getFragment(savedInstanceState, HOME_TWO_KEY);
+            threeFragment = (HomeThreeFragment) getSupportFragmentManager().getFragment(savedInstanceState, HOME_THREE_KEY);
+            fourFragment = (HomeFourFragment) getSupportFragmentManager().getFragment(savedInstanceState, HOME_FOUR_KEY);
+
+            if (oneFragment == null) {
+                oneFragment = HomeOneNewFragment.getInstance();
+            }
+            if (twoFragment == null) {
+                twoFragment = HomeTwoFragment.getInstance();
+            }
+            if (threeFragment == null) {
+                threeFragment = HomeThreeFragment.getInstance();
+            }
+            if (fourFragment == null) {
+                fourFragment = HomeFourFragment.getInstance();
+            }
+            mFragments = new Fragment[]{oneFragment, twoFragment, threeFragment, fourFragment};
+        } else {
+            initFragment();
+        }
+    }
+
+    private void initFragment() {
+//        HomeOneFragment oneFragment = HomeOneFragment.getInstance();
+        oneFragment = HomeOneNewFragment.getInstance();
+        twoFragment = HomeTwoFragment.getInstance();
+        threeFragment = HomeThreeFragment.getInstance();
+        fourFragment = HomeFourFragment.getInstance();
+        mFragments = new Fragment[]{oneFragment, twoFragment, threeFragment, fourFragment};
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.member_fl, oneFragment).commit();
+
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (oneFragment.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, HOME_ONE_KEY, oneFragment);
+        }
+        if (twoFragment.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, HOME_TWO_KEY, twoFragment);
+        }
+        if (threeFragment.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, HOME_THREE_KEY, threeFragment);
+        }
+        if (fourFragment.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, HOME_FOUR_KEY, fourFragment);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    private void initViews() {
+
+        //initFragment();
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
+
+    }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    onTabClicked(0);
+                    return true;
+                case R.id.navigation_dashboard:
+                    onTabClicked(1);
+                    return true;
+                case R.id.navigation_notifications:
+                    onTabClicked(2);
+                    return true;
+                case R.id.navigation_person:
+                    onTabClicked(3);
+                    return true;
+            }
+
+            return false;
+        }
+    };
+
+    /**
+     * tab切换
+     */
+    private void onTabClicked(int index) {
+
+        if (currentTabIndex != index) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.hide(mFragments[currentTabIndex]);
+            if (!mFragments[index].isAdded()) {
+                ft.add(R.id.member_fl, mFragments[index]);
+            }
+            ft.show(mFragments[index]).commit();
+        }
+        currentTabIndex = index;
+    }
+  @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (isShouldHideKeyboard(v, ev)) {
+                InputMethodManager imm =
+                        (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS
+                );
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    // Return whether touch the view.
+    private boolean isShouldHideKeyboard(View v, MotionEvent event) {
+        if (v != null && (v instanceof EditText)) {
+            int[] l = {0, 0};
+            v.getLocationInWindow(l);
+            int left = l[0],
+                    top = l[1],
+                    bottom = top + v.getHeight(),
+                    right = left + v.getWidth();
+            return !(event.getX() > left && event.getX() < right
+                    && event.getY() > top && event.getY() < bottom);
+        }
+        return false;
+    }
+}
